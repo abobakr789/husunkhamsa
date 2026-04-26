@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>جدول الحصون الخمسة</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --h1-dark:#1B5E20;--h1-mid:#4CAF50;--h1-light:#E8F5E9;
+  --ink:#1A1A2E;--ink-light:#4A4A6A;
+  --surface:#FAFAF7;--surface2:#F2F0EB;
+  --border:#D8D4C8;--border-light:#EAE6DC;
+  --shadow:0 4px 20px rgba(26,26,46,.10);
+  --shadow-lg:0 12px 40px rgba(26,26,46,.16);
+  --radius:16px;--radius-sm:10px;
+  --gold:#C8963E;
+  --red:#C62828;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Tajawal',sans-serif;background:var(--surface);color:var(--ink);min-height:100vh;direction:rtl;}
+
+/* ── PAGES ── */
+.page{display:none;min-height:100vh;}
+.page.active{display:flex;flex-direction:column;}
+
+/* ══════════════════════════════
+   REGISTER / LOGIN PAGE
+══════════════════════════════ */
+#registerPage{
+  background:linear-gradient(160deg,#0a3d0a 0%,#1B5E20 35%,#0D47A1 100%);
+  align-items:center;justify-content:center;padding:24px;
+  position:relative;overflow:hidden;
+}
+#registerPage::before{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' fill-opacity='0.03'%3E%3Cpath d='M50 50v-10h-4v10h-10v4h10v10h4v-10h10v-4h-10zM50 10V0h-4v10h-10v4h10v10h4V14h10v-4h-10z'/%3E%3C/g%3E%3C/svg%3E");
+}
+.register-card{
+  background:#fff;border-radius:24px;padding:40px 36px;
+  width:100%;max-width:440px;box-shadow:var(--shadow-lg);
+  position:relative;z-index:1;
+}
+.register-card .logo{text-align:center;margin-bottom:28px;}
+.register-card .bismillah{font-family:'Amiri',serif;font-size:20px;color:var(--h1-dark);margin-bottom:6px;}
+.register-card h2{font-size:22px;font-weight:800;color:var(--ink);margin-bottom:4px;}
+.register-card .tagline{font-size:13px;color:var(--ink-light);margin-bottom:32px;}
+
+.form-group{margin-bottom:18px;}
+.form-group label{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:7px;}
+.form-group input{
+  width:100%;padding:12px 16px;border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);font-family:'Tajawal',sans-serif;font-size:14px;
+  color:var(--ink);background:var(--surface);transition:all .2s;direction:rtl;
+}
+.form-group input:focus{outline:none;border-color:var(--h1-mid);box-shadow:0 0 0 3px rgba(76,175,80,.15);background:#fff;}
+.form-group input.error{border-color:var(--red);}
+.field-error{font-size:11px;color:var(--red);margin-top:4px;display:none;}
+.field-error.show{display:block;}
+
+.btn-primary{
+  width:100%;padding:14px;border:none;border-radius:var(--radius-sm);
+  background:linear-gradient(135deg,var(--h1-dark),#2E7D32);
+  color:#fff;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:800;
+  cursor:pointer;transition:all .2s;margin-top:8px;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(27,94,32,.35);}
+.btn-primary:disabled{opacity:.6;transform:none;cursor:not-allowed;}
+
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--ink-light);font-size:12px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.returning-link{text-align:center;font-size:13px;color:var(--ink-light);}
+.returning-link span{color:var(--h1-dark);font-weight:700;cursor:pointer;text-decoration:underline;}
+
+.admin-hint{
+  text-align:center;margin-top:20px;
+  font-size:11px;color:rgba(255,255,255,.4);cursor:pointer;
+}
+.admin-hint:hover{color:rgba(255,255,255,.7);}
+
+/* ══════════════════════════════
+   APP PAGE  
+══════════════════════════════ */
+#appPage{background:var(--surface);}
+
+.app-header{
+  background:linear-gradient(135deg,#1B5E20 0%,#2E7D32 40%,#1565C0 100%);
+  padding:18px 20px;display:flex;align-items:center;justify-content:space-between;
+}
+.app-header-title{color:#fff;}
+.app-header-title .bismillah-sm{font-family:'Amiri',serif;font-size:14px;opacity:.8;}
+.app-header-title h1{font-size:18px;font-weight:800;}
+.user-badge{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.15);border-radius:24px;padding:6px 14px;
+}
+.user-badge .user-name{font-size:13px;font-weight:700;color:#fff;}
+.user-badge .user-email{font-size:11px;color:rgba(255,255,255,.7);}
+.btn-logout{
+  background:rgba(255,255,255,.2);border:none;border-radius:50%;
+  width:30px;height:30px;cursor:pointer;color:#fff;font-size:14px;
+  display:flex;align-items:center;justify-content:center;transition:background .2s;
+}
+.btn-logout:hover{background:rgba(255,255,255,.35);}
+
+.sync-bar{background:#fff;border-bottom:1px solid var(--border-light);padding:5px 20px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink-light);}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:#9E9E9E;flex-shrink:0;transition:background .3s;}
+.sync-dot.syncing{background:#FFC107;animation:blink .8s infinite;}
+.sync-dot.synced{background:#4CAF50;}
+.sync-dot.error{background:#F44336;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* rest of app styles */
+.info-bar{display:flex;gap:12px;padding:12px 20px;background:#fff;border-bottom:1px solid var(--border-light);flex-wrap:wrap;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(26,26,46,.06);position:sticky;top:0;z-index:100;}
+.week-nav{display:flex;align-items:center;gap:10px;}
+.week-nav button{width:32px;height:32px;border:1.5px solid var(--border);border-radius:50%;background:var(--surface);cursor:pointer;font-size:15px;color:var(--ink);display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.week-nav button:hover{background:var(--h1-light);border-color:var(--h1-mid);color:var(--h1-dark);}
+.week-label{font-size:14px;font-weight:700;color:var(--ink);min-width:80px;text-align:center;}
+.btn-sm{padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:12px;font-weight:700;transition:all .2s;}
+.btn-print{background:var(--h1-dark);color:#fff;}
+.btn-print:hover{background:#2E7D32;}
+
+.stats-strip{display:flex;background:#fff;border-bottom:2px solid var(--border-light);overflow-x:auto;}
+.stat-pill{flex:1;min-width:100px;padding:9px 12px;text-align:center;border-left:1px solid var(--border-light);}
+.stat-pill:last-child{border-left:none;}
+.s-label{font-size:10px;color:var(--ink-light);margin-bottom:2px;font-weight:500;}
+.s-bar{height:4px;background:var(--border-light);border-radius:3px;margin:4px 0 3px;overflow:hidden;}
+.s-fill{height:100%;border-radius:3px;transition:width .5s;}
+.s-count{font-size:11px;font-weight:700;}
+.sp-h1 .s-fill{background:#4CAF50}.sp-h1 .s-count{color:#1B5E20}
+.sp-h2 .s-fill{background:#1976D2}.sp-h2 .s-count{color:#0D47A1}
+.sp-h3 .s-fill{background:#F57C00}.sp-h3 .s-count{color:#E65100}
+.sp-h4 .s-fill{background:#C2185B}.sp-h4 .s-count{color:#880E4F}
+.sp-h5 .s-fill{background:#7B1FA2}.sp-h5 .s-count{color:#4A148C}
+
+.week-tabs{display:flex;padding:12px 20px 0;overflow-x:auto;gap:0;}
+.week-tab{padding:7px 16px;border:1.5px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;background:var(--surface2);cursor:pointer;font-size:12px;font-family:'Tajawal',sans-serif;font-weight:600;color:var(--ink-light);transition:all .2s;margin-left:4px;}
+.week-tab.active{background:#fff;color:var(--h1-dark);border-color:var(--h1-mid);border-bottom-color:#fff;}
+.week-tab .tab-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--border);margin-right:5px;vertical-align:middle;}
+.week-tab.has-data .tab-dot,.week-tab.active .tab-dot{background:var(--h1-mid);}
+.btn-add-week{padding:7px 12px;border:1.5px dashed var(--border);border-bottom:none;border-radius:8px 8px 0 0;background:transparent;cursor:pointer;font-size:12px;font-family:'Tajawal',sans-serif;color:var(--ink-light);transition:all .2s;margin-left:4px;}
+.btn-add-week:hover{border-color:var(--h1-mid);color:var(--h1-dark);}
+
+.table-outer{padding:0 16px 20px;overflow-x:auto;}
+.table-container{min-width:860px;background:#fff;border-radius:0 12px 12px 12px;box-shadow:0 8px 32px rgba(26,26,46,.12);overflow:hidden;border:1.5px solid var(--h1-mid);}
+table{width:100%;border-collapse:collapse;direction:rtl;}
+th,td{border:1px solid #EAE6DC;text-align:center;vertical-align:middle;}
+.gh{font-size:12px;font-weight:800;padding:9px 6px;}
+.gh-h1{background:#1B5E20;color:#fff}.gh-h2{background:#0D47A1;color:#fff}
+.gh-h3{background:#E65100;color:#fff}.gh-h4{background:#880E4F;color:#fff}
+.gh-h5{background:#4A148C;color:#fff}.gh-meta{background:#1A1A2E;color:#fff}
+.sh{font-size:10px;font-weight:600;padding:5px 3px;line-height:1.4;}
+.sh-h1{background:#E8F5E9;color:#1B5E20}.sh-h2{background:#E3F2FD;color:#0D47A1}
+.sh-h3{background:#FFF3E0;color:#E65100}.sh-h4{background:#FCE4EC;color:#880E4F}
+.sh-h5{background:#F3E5F5;color:#4A148C}.sh-meta{background:#F2F0EB;color:#4A4A6A}
+.day-label{font-size:11px;font-weight:600;padding:7px 5px;background:#F2F0EB;color:#4A4A6A;min-width:60px;}
+.date-input-cell{padding:2px;min-width:80px;}
+.date-input-cell input{width:100%;border:1px solid transparent;background:transparent;font-family:'Tajawal',sans-serif;font-size:11px;text-align:center;color:var(--ink);padding:3px;border-radius:4px;}
+.date-input-cell input:focus{outline:none;border-color:var(--border);background:var(--surface);}
+.week-num-cell{background:#1A1A2E;color:#fff;font-weight:800;font-size:13px;min-width:30px;padding:3px;}
+.check-cell{padding:5px 3px;cursor:pointer;transition:background .15s;min-width:40px;}
+.check-cell.c-h1{background:#F1F8F1}.check-cell.c-h2{background:#F0F7FF}
+.check-cell.c-h3{background:#FFFAF0}.check-cell.c-h4{background:#FFF0F6}
+.check-cell.c-h5{background:#FAF0FF}
+.check-cell.checked.c-h1{background:#E8F5E9}.check-cell.checked.c-h2{background:#E3F2FD}
+.check-cell.checked.c-h3{background:#FFF3E0}.check-cell.checked.c-h4{background:#FCE4EC}
+.check-cell.checked.c-h5{background:#F3E5F5}
+.check-icon{font-size:17px;line-height:1;user-select:none;display:block;}
+.check-cell:not(.checked) .check-icon{opacity:.18;}
+.note-cell{padding:2px;min-width:80px;}
+.note-cell input{width:100%;border:1px solid transparent;background:transparent;font-family:'Tajawal',sans-serif;font-size:10px;color:var(--ink);padding:3px 5px;border-radius:4px;text-align:right;}
+.note-cell input:focus{outline:none;border-color:var(--border);background:var(--surface);}
+.row-even td{filter:brightness(.988);}
+.total-row td{background:#1A1A2E;color:#fff;font-weight:700;font-size:12px;padding:7px 4px;}
+.total-row .tc-h1{background:#1B5E20;color:#fff}.total-row .tc-h2{background:#0D47A1;color:#fff}
+.total-row .tc-h3{background:#E65100;color:#fff}.total-row .tc-h4{background:#880E4F;color:#fff}
+.total-row .tc-h5{background:#4A148C;color:#fff}
+.complete-banner{display:none;background:linear-gradient(90deg,#1B5E20,#0D47A1);color:#fff;text-align:center;padding:9px;font-size:13px;font-weight:700;}
+
+.app-footer{text-align:center;padding:16px;color:var(--ink-light);font-size:11px;border-top:1px solid var(--border-light);}
+.app-footer .dua{font-family:'Amiri',serif;font-size:14px;color:var(--h1-dark);margin-bottom:3px;}
+
+/* ══════════════════════════════
+   ADMIN PAGE
+══════════════════════════════ */
+#adminPage{background:#0f1117;}
+
+.admin-header{
+  background:linear-gradient(135deg,#0f1117,#1a1a2e);
+  padding:20px 24px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid #2a2a3e;
+}
+.admin-header h2{color:#fff;font-size:18px;font-weight:800;display:flex;align-items:center;gap:10px;}
+.admin-header h2 span{background:#C8963E;color:#fff;font-size:11px;padding:3px 10px;border-radius:12px;}
+.btn-admin-logout{background:#2a2a3e;border:1px solid #3a3a5e;color:#aaa;border-radius:8px;padding:7px 14px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:12px;transition:all .2s;}
+.btn-admin-logout:hover{background:#3a3a5e;color:#fff;}
+
+.admin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;padding:20px 24px;}
+.admin-stat-card{background:#1a1a2e;border-radius:12px;padding:18px;border:1px solid #2a2a3e;text-align:center;}
+.admin-stat-card .asc-val{font-size:32px;font-weight:800;color:#C8963E;margin-bottom:4px;}
+.admin-stat-card .asc-label{font-size:12px;color:#888;}
+
+.admin-search{padding:0 24px 16px;display:flex;gap:10px;flex-wrap:wrap;}
+.admin-search input{
+  flex:1;min-width:200px;padding:10px 16px;border:1px solid #2a2a3e;
+  border-radius:8px;background:#1a1a2e;color:#fff;font-family:'Tajawal',sans-serif;font-size:13px;
+}
+.admin-search input:focus{outline:none;border-color:#C8963E;}
+.btn-refresh{padding:10px 18px;background:#C8963E;color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;transition:all .2s;}
+.btn-refresh:hover{background:#b8862e;}
+
+.users-table-wrap{padding:0 24px 24px;overflow-x:auto;}
+.users-table{width:100%;border-collapse:collapse;min-width:700px;direction:rtl;}
+.users-table th{background:#1a1a2e;color:#aaa;font-size:12px;font-weight:600;padding:10px 12px;text-align:right;border-bottom:1px solid #2a2a3e;}
+.users-table td{padding:12px;font-size:13px;color:#ccc;border-bottom:1px solid #1e1e2e;text-align:right;vertical-align:middle;}
+.users-table tr:hover td{background:#1a1a2e;}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#1B5E20,#0D47A1);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;flex-shrink:0;}
+.user-row-info{display:flex;align-items:center;gap:10px;}
+.user-name-cell{font-weight:600;color:#fff;}
+.badge-new{background:#1B5E20;color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;margin-right:6px;}
+.badge-active{background:#0D47A1;color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;margin-right:6px;}
+.visits-badge{background:#2a2a3e;color:#C8963E;font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;}
+.btn-note-edit{background:transparent;border:1px solid #3a3a5e;color:#888;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:11px;font-family:'Tajawal',sans-serif;transition:all .2s;}
+.btn-note-edit:hover{border-color:#C8963E;color:#C8963E;}
+.empty-state{text-align:center;padding:48px;color:#555;}
+.empty-state .es-icon{font-size:40px;margin-bottom:12px;}
+.loading-spinner{display:flex;align-items:center;justify-content:center;padding:40px;gap:12px;color:#888;}
+.spin{width:24px;height:24px;border:2px solid #2a2a3e;border-top-color:#C8963E;border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ══════════════════════════════
+   ADMIN LOGIN MODAL
+══════════════════════════════ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal-card{background:#1a1a2e;border:1px solid #2a2a3e;border-radius:16px;padding:32px;width:100%;max-width:380px;text-align:center;}
+.modal-card h3{color:#fff;font-size:18px;font-weight:800;margin-bottom:6px;}
+.modal-card p{color:#888;font-size:13px;margin-bottom:24px;}
+.modal-card input{width:100%;padding:12px 16px;border:1.5px solid #2a2a3e;border-radius:8px;background:#0f1117;color:#fff;font-family:'Tajawal',sans-serif;font-size:14px;text-align:center;letter-spacing:4px;}
+.modal-card input:focus{outline:none;border-color:#C8963E;}
+.modal-card .modal-err{color:#F44336;font-size:12px;margin-top:8px;display:none;}
+.modal-card .modal-err.show{display:block;}
+.modal-btns{display:flex;gap:10px;margin-top:20px;}
+.btn-modal-confirm{flex:1;padding:12px;background:#C8963E;color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:800;transition:all .2s;}
+.btn-modal-confirm:hover{background:#b8862e;}
+.btn-modal-cancel{flex:1;padding:12px;background:#2a2a3e;color:#aaa;border:none;border-radius:8px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:14px;transition:all .2s;}
+.btn-modal-cancel:hover{background:#3a3a5e;color:#fff;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 24px;border-radius:24px;font-size:13px;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:99999;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* LOADING */
+.full-loader{position:fixed;inset:0;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:16px;}
+.full-loader.hidden{display:none;}
+.big-spinner{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--h1-mid);border-radius:50%;animation:spin .8s linear infinite;}
+.full-loader p{font-size:15px;color:var(--ink-light);}
+
+@media print{
+  .info-bar,.week-tabs,.btn-sm,.btn-add-week,.toast,.app-footer,.stats-strip,.sync-bar,.app-header{display:none!important;}
+  .table-outer{padding:0;}.table-container{box-shadow:none;border-radius:0;}
+  body{background:#fff;}
+}
+
+/* ══════════════════════════════
+   GUIDE PAGE (الدليل)
+══════════════════════════════ */
+#guidePage { background: #F5F3EE; }
+.guide-header {
+  background: linear-gradient(135deg, #1A2744 0%, #0D47A1 50%, #1B5E20 100%);
+  padding: 28px 24px; text-align: center; position: relative; overflow: hidden;
+}
+.guide-header::before {
+  content: ''; position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23C8963E' fill-opacity='0.08'%3E%3Cpath d='M30 0L60 30L30 60L0 30z'/%3E%3C/g%3E%3C/svg%3E");
+}
+.guide-header h1 { font-family:'Amiri',serif; font-size:26px; color:#fff; font-weight:700; margin-bottom:6px; position:relative; }
+.guide-header p { font-size:13px; color:rgba(255,255,255,.7); position:relative; }
+.guide-nav { display:flex; gap:0; background:#fff; border-bottom:2px solid #EAE6DC; overflow-x:auto; padding:0 16px; position:sticky; top:0; z-index:50; }
+.guide-nav-btn { padding:12px 18px; border:none; background:transparent; cursor:pointer; font-family:'Tajawal',sans-serif; font-size:13px; font-weight:600; color:#666; border-bottom:3px solid transparent; margin-bottom:-2px; white-space:nowrap; transition:all .2s; }
+.guide-nav-btn.active { color:#1B5E20; border-bottom-color:#1B5E20; }
+.guide-nav-btn:hover { color:#1B5E20; }
+.guide-section { display:none; padding:20px 16px; max-width:900px; margin:0 auto; }
+.guide-section.active { display:block; }
+
+/* Blueprint card */
+.blueprint-card {
+  background:#fff; border-radius:16px; padding:24px; margin-bottom:20px;
+  border:1px solid #DDD8CC; box-shadow:0 2px 12px rgba(26,26,46,.07);
+  position:relative; overflow:hidden;
+}
+.blueprint-card::before {
+  content:''; position:absolute; top:0; right:0; width:4px; height:100%; border-radius:0 16px 16px 0;
+}
+.bc-h1::before{background:#1B5E20} .bc-h2::before{background:#0D47A1}
+.bc-h3::before{background:#E65100} .bc-h4::before{background:#880E4F} .bc-h5::before{background:#4A148C}
+.blueprint-card h3 { font-size:17px; font-weight:800; margin-bottom:8px; display:flex; align-items:center; gap:10px; }
+.hisn-badge { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; color:#fff; flex-shrink:0; }
+.hb-1{background:#1B5E20}.hb-2{background:#0D47A1}.hb-3{background:#E65100}.hb-4{background:#880E4F}.hb-5{background:#4A148C}
+.blueprint-card p { font-size:13px; color:#444; line-height:1.8; margin-bottom:10px; }
+.blueprint-card .detail-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-top:14px; }
+.detail-box { background:#F8F6F0; border-radius:10px; padding:12px 14px; border:1px solid #E8E4D8; }
+.detail-box .db-label { font-size:10px; font-weight:700; color:#888; margin-bottom:4px; text-transform:uppercase; letter-spacing:.5px; }
+.detail-box .db-val { font-size:13px; font-weight:600; color:#1A1A2E; }
+.gold-box { background:linear-gradient(135deg,#FFF8E8,#FFF0CC); border:1px solid #E8C060; border-radius:12px; padding:14px 16px; margin-top:14px; }
+.gold-box p { font-size:13px; color:#5D4000; margin:0; }
+.gold-box strong { color:#C8963E; }
+
+/* Principles section */
+.principle-card { background:#fff; border-radius:12px; padding:16px 20px; margin-bottom:12px; border:1px solid #DDD8CC; display:flex; gap:14px; align-items:flex-start; }
+.principle-num { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#1A2744,#0D47A1); color:#C8963E; font-size:14px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.principle-card h4 { font-size:14px; font-weight:800; color:#1A1A2E; margin-bottom:4px; }
+.principle-card p { font-size:12px; color:#666; line-height:1.7; margin:0; }
+
+/* ══ CALCULATOR PAGE ══ */
+.calc-card { background:#fff; border-radius:16px; padding:24px; margin-bottom:16px; border:1px solid #DDD8CC; box-shadow:0 2px 12px rgba(26,26,46,.07); }
+.calc-card h3 { font-size:16px; font-weight:800; color:#880E4F; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+.calc-group { margin-bottom:14px; }
+.calc-group label { display:block; font-size:12px; font-weight:700; color:#555; margin-bottom:6px; }
+.calc-group select, .calc-group input {
+  width:100%; padding:10px 14px; border:1.5px solid #DDD8CC; border-radius:8px;
+  font-family:'Tajawal',sans-serif; font-size:13px; color:#1A1A2E;
+  background:#FAFAF7; direction:rtl; transition:border-color .2s;
+}
+.calc-group select:focus, .calc-group input:focus { outline:none; border-color:#880E4F; }
+.btn-calc { width:100%; padding:13px; border:none; border-radius:10px; background:linear-gradient(135deg,#880E4F,#C2185B); color:#fff; font-family:'Tajawal',sans-serif; font-size:15px; font-weight:800; cursor:pointer; margin-top:8px; transition:all .2s; }
+.btn-calc:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(136,14,79,.3); }
+.calc-result { background:linear-gradient(135deg,#FFF0F6,#FCE4EC); border:1.5px solid #F48FB1; border-radius:16px; padding:20px; margin-top:16px; display:none; }
+.calc-result.show { display:block; }
+.calc-result h4 { font-size:14px; font-weight:800; color:#880E4F; margin-bottom:14px; text-align:center; }
+.day-plan { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid #F8BBD0; }
+.day-plan:last-child { border-bottom:none; }
+.day-circle { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#880E4F,#C2185B); color:#fff; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.day-plan-info { flex:1; }
+.day-plan-info .dp-day { font-size:12px; font-weight:700; color:#880E4F; }
+.day-plan-info .dp-pages { font-size:13px; color:#1A1A2E; font-weight:600; }
+.day-plan-info .dp-range { font-size:11px; color:#888; margin-top:2px; }
+.total-badge { background:#880E4F; color:#fff; border-radius:10px; padding:10px 16px; text-align:center; margin-top:12px; font-size:13px; font-weight:700; }
+
+/* Back button */
+.btn-back-guide { background:transparent; border:none; color:rgba(255,255,255,.8); cursor:pointer; font-family:'Tajawal',sans-serif; font-size:13px; padding:6px 12px; border-radius:8px; display:flex; align-items:center; gap:6px; transition:all .2s; position:relative; z-index:1; }
+.btn-back-guide:hover { background:rgba(255,255,255,.15); color:#fff; }
+
+/* Main nav bar in app */
+.main-nav { display:flex; background:#fff; border-bottom:2px solid #EAE6DC; }
+.nav-tab { flex:1; padding:11px 8px; border:none; background:transparent; cursor:pointer; font-family:'Tajawal',sans-serif; font-size:12px; font-weight:600; color:#888; border-bottom:3px solid transparent; margin-bottom:-2px; transition:all .2s; display:flex; flex-direction:column; align-items:center; gap:3px; }
+.nav-tab .nav-icon { font-size:18px; }
+.nav-tab.active { color:#1B5E20; border-bottom-color:#1B5E20; }
+.nav-tab:hover { color:#1B5E20; }
+
+
+/* AI Calculator Result */
+.ai-result-section { background:#fff; border-radius:14px; padding:20px; margin-bottom:14px; border:1px solid #DDD8CC; }
+.ai-result-section h4 { font-size:14px; font-weight:800; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+.ai-stat-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px dashed #EAE6DC; }
+.ai-stat-row:last-child { border-bottom:none; }
+.ai-stat-label { font-size:12px; color:#666; }
+.ai-stat-val { font-size:13px; font-weight:700; color:#1A1A2E; }
+.ai-day-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap:10px; margin-top:12px; }
+.ai-day-box { background:linear-gradient(135deg,#FFF0F6,#FCE4EC); border-radius:10px; padding:12px; text-align:center; border:1px solid #F48FB1; }
+.ai-day-box .adb-name { font-size:11px; color:#880E4F; font-weight:700; margin-bottom:4px; }
+.ai-day-box .adb-pages { font-size:16px; font-weight:800; color:#1A1A2E; }
+.ai-day-box .adb-unit { font-size:10px; color:#888; }
+.ai-surah-tag { display:inline-block; background:#E8F5E9; border:1px solid #A5D6A7; border-radius:12px; padding:3px 10px; font-size:11px; color:#1B5E20; margin:3px 2px; }
+.ai-surah-tag.far { background:#E3F2FD; border-color:#90CAF9; color:#0D47A1; }
+.ai-error { background:#FFF3F3; border:1px solid #FFCDD2; border-radius:12px; padding:16px; color:#C62828; font-size:13px; line-height:1.7; }
+
+
+/* ══ WEEKLY REPORT ══ */
+.report-modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9998;display:none;align-items:center;justify-content:center;padding:16px;}
+.report-modal.open{display:flex;}
+.report-card{background:#fff;border-radius:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.report-header{background:linear-gradient(135deg,#1B5E20,#0D47A1);padding:20px 24px;border-radius:20px 20px 0 0;color:#fff;}
+.report-header h3{font-size:18px;font-weight:800;margin-bottom:2px;}
+.report-header p{font-size:12px;opacity:.8;}
+.report-body{padding:20px;}
+.report-stat{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #EAE6DC;}
+.report-stat:last-child{border-bottom:none;}
+.rs-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.rs-info{flex:1;}
+.rs-label{font-size:12px;color:#666;margin-bottom:2px;}
+.rs-val{font-size:14px;font-weight:700;color:#1A1A2E;}
+.rs-bar{height:6px;background:#EAE6DC;border-radius:3px;margin-top:4px;overflow:hidden;}
+.rs-fill{height:100%;border-radius:3px;transition:width .6s ease;}
+.report-compare{background:linear-gradient(135deg,#F0F7FF,#E8F5E9);border-radius:12px;padding:14px;margin:14px 0;text-align:center;}
+.report-compare .rc-pct{font-size:32px;font-weight:800;color:#1B5E20;}
+.report-compare .rc-label{font-size:12px;color:#666;}
+.btn-close-report{width:100%;padding:12px;border:none;background:#F2F0EB;border-radius:0 0 20px 20px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;color:#444;}
+.btn-close-report:hover{background:#E8E4D8;}
+
+/* ══ MEMORIZATION MAP ══ */
+.map-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9998;display:none;align-items:center;justify-content:center;padding:16px;}
+.map-modal.open{display:flex;}
+.map-container{background:#1A1A2E;border-radius:20px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;padding:24px;}
+.map-container h3{color:#fff;font-size:18px;font-weight:800;margin-bottom:6px;}
+.map-container p{color:#888;font-size:12px;margin-bottom:16px;}
+.map-input-row{display:flex;gap:8px;margin-bottom:16px;}
+.map-input-row select{flex:1;padding:10px 14px;border:1.5px solid #2a2a3e;border-radius:8px;background:#0f1117;color:#fff;font-family:'Tajawal',sans-serif;font-size:13px;direction:rtl;}
+.btn-update-map{padding:10px 20px;background:#C8963E;color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;}
+.quran-grid{display:grid;grid-template-columns:repeat(30,1fr);gap:2px;margin-bottom:16px;}
+.page-cell{height:14px;border-radius:2px;background:#2a2a3e;transition:background .3s;cursor:default;position:relative;}
+.page-cell.memorized{background:#1B5E20;}
+.page-cell.near{background:#C2185B;}
+.page-cell.far{background:#1976D2;}
+.map-legend{display:flex;gap:16px;justify-content:center;font-size:11px;}
+.legend-dot{width:12px;height:12px;border-radius:3px;display:inline-block;margin-left:4px;}
+
+/* ══ ACHIEVEMENTS ══ */
+.achievements-bar{display:flex;gap:8px;padding:10px 16px;background:#fff;border-bottom:1px solid #EAE6DC;overflow-x:auto;}
+.badge-item{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:56px;}
+.badge-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;background:#F2F0EB;border:2px solid #DDD8CC;transition:all .3s;}
+.badge-icon.earned{background:linear-gradient(135deg,#FFF8E8,#FFE082);border-color:#C8963E;box-shadow:0 2px 8px rgba(200,150,62,.3);}
+.badge-icon.locked{opacity:.4;filter:grayscale(1);}
+.badge-label{font-size:9px;color:#888;text-align:center;line-height:1.2;}
+
+/* ══ GROUPS ══ */
+.groups-modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9998;display:none;align-items:center;justify-content:center;padding:16px;}
+.groups-modal.open{display:flex;}
+.groups-card{background:#fff;border-radius:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
+.groups-header{background:linear-gradient(135deg,#4A148C,#0D47A1);padding:20px 24px;border-radius:20px 20px 0 0;color:#fff;}
+.groups-body{padding:20px;}
+.group-code-display{background:linear-gradient(135deg,#F3E5F5,#E3F2FD);border-radius:12px;padding:16px;text-align:center;margin-bottom:16px;}
+.group-code-display .gc-code{font-size:32px;font-weight:800;color:#4A148C;letter-spacing:6px;font-family:monospace;}
+.group-code-display .gc-label{font-size:12px;color:#666;margin-top:4px;}
+.group-member{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #EAE6DC;}
+.group-member:last-child{border-bottom:none;}
+.gm-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#1B5E20,#0D47A1);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;}
+.gm-info{flex:1;}
+.gm-name{font-size:13px;font-weight:600;color:#1A1A2E;}
+.gm-progress{font-size:11px;color:#888;}
+.gm-pct{font-size:13px;font-weight:700;color:#1B5E20;}
+.btn-group-action{width:100%;padding:12px;border:none;border-radius:10px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;margin-bottom:8px;}
+.btn-create-group{background:linear-gradient(135deg,#4A148C,#7B1FA2);color:#fff;}
+.btn-join-group{background:linear-gradient(135deg,#0D47A1,#1976D2);color:#fff;}
+
+/* ══ SMART NOTIFY ══ */
+.notify-banner{background:linear-gradient(135deg,#1B5E20,#0D47A1);color:#fff;padding:10px 16px;display:none;align-items:center;justify-content:space-between;font-size:12px;}
+.notify-banner.show{display:flex;}
+
+</style>
+</head>
+<body>
+
+<!-- Full page loader -->
+<div class="full-loader" id="fullLoader">
+  <div class="big-spinner"></div>
+  <p id="loaderMsg">جاري التحميل...</p>
+</div>
+
+<!-- ══ REGISTER / LOGIN PAGE ══ -->
+<div class="page" id="registerPage">
+  <div class="register-card">
+    <div class="logo">
+      <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+      <h2>جدول الحصون الخمسة 🌿</h2>
+      <div class="tagline">متابعة مراجعة القرآن الكريم · حفص عن عاصم</div>
+    </div>
+
+    <div id="regForm">
+      <div class="form-group">
+        <label>الاسم الكامل</label>
+        <input type="text" id="regName" placeholder="أبوبكر محمد" autocomplete="name">
+        <div class="field-error" id="errName">الرجاء إدخال الاسم</div>
+      </div>
+      <div class="form-group">
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="regEmail" placeholder="email@example.com" autocomplete="email" dir="ltr" style="text-align:left;">
+        <div class="field-error" id="errEmail">الرجاء إدخال إيميل صحيح</div>
+      </div>
+      <button class="btn-primary" id="btnRegister" onclick="handleRegister()">دخول ← ابدأ رحلتك مع القرآن</button>
+    </div>
+
+    <div class="divider">أو</div>
+    <div class="returning-link">
+      عندك حساب بالفعل؟ <span onclick="handleReturnUser()">ادخل بإيميلك</span>
+    </div>
+  </div>
+  <div class="admin-hint" onclick="openAdminModal()">🔐 لوحة الإدارة</div>
+</div>
+
+
+<!-- ══ GUIDE PAGE ══ -->
+<div class="page" id="guidePage">
+  <div class="guide-header">
+    <button class="btn-back-guide" onclick="showPage('appPage')">← العودة للجدول</button>
+    <h1>منهجية الحصون الخمسة</h1>
+    <p>المنهجية العملية لبناء حفظ متين لا يتفلت</p>
+  </div>
+
+  <div class="guide-nav">
+    <button class="guide-nav-btn active" onclick="showGuideSection('overview', this)">نظرة عامة</button>
+    <button class="guide-nav-btn" onclick="showGuideSection('husun', this)">الحصون الخمسة</button>
+    <button class="guide-nav-btn" onclick="showGuideSection('principles', this)">المبادئ</button>
+    <button class="guide-nav-btn" onclick="showGuideSection('calculator', this)">🧮 حاسبة المراجعة</button>
+  </div>
+
+  <!-- Overview -->
+  <div class="guide-section active" id="gs-overview">
+    <div style="background:linear-gradient(135deg,#1A2744,#0D47A1);border-radius:16px;padding:24px;margin-bottom:20px;color:#fff;text-align:center;">
+      <div style="font-family:'Amiri',serif;font-size:15px;color:#C8963E;margin-bottom:8px;">الحفظ كالبناء</div>
+      <div style="font-size:14px;opacity:.85;line-height:1.8;">لا يرتفع الطابق الثاني حتى تستقر الأساسات<br>البناء اللاحق يعتمد كلياً على قوة الأساس السابق</div>
+    </div>
+
+    <div class="blueprint-card" style="background:linear-gradient(135deg,#F8F6F0,#EDE8DC);border:1px solid #C8963E44;">
+      <h3 style="color:#5D4000;font-family:'Amiri',serif;font-size:20px;text-align:center;justify-content:center;">الضابط الحقيقي: متى يكون القرآن "مَعَكَ"؟</h3>
+      <p style="text-align:center;color:#666;">سأل النبي ﷺ الصحابي: "أمَعَكَ من القرآن شيء؟" — الحفظ المتقن ليس استظهاراً مؤقتاً، بل حالة من الملازمة التامة.</p>
+      <div class="detail-grid">
+        <div class="detail-box"><div class="db-label">في الصلاة</div><div class="db-val">القدرة التامة على الصلاة به غيباً دون توتر أو خوف من الخطأ</div></div>
+        <div class="detail-box"><div class="db-label">عن ظهر قلب</div><div class="db-val">استحضار فوري دون تردد أو تلعثم</div></div>
+        <div class="detail-box"><div class="db-label">في كل مكان</div><div class="db-val">لا يعتمد استدعاء الآيات على وجود مصحف ورقي أمامك</div></div>
+        <div class="detail-box"><div class="db-label">في كل حال</div><div class="db-val">ماشياً، راكباً، مرهقاً، أو مستريحاً</div></div>
+      </div>
+    </div>
+
+    <div class="blueprint-card">
+      <h3 style="color:#1A2744;font-family:'Amiri',serif;font-size:18px;">المخطط الهندسي للمنهجية</h3>
+      <div style="display:grid;gap:10px;margin-top:14px;">
+        <div style="background:#1A2744;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#C8963E;font-weight:800;font-size:13px;">الحراسة</span>
+          <div style="display:flex;gap:8px;">
+            <span style="background:#880E4F;color:#fff;padding:4px 12px;border-radius:6px;font-size:12px;">الحصن ٤ · مراجعة القريب</span>
+            <span style="background:#4A148C;color:#fff;padding:4px 12px;border-radius:6px;font-size:12px;">الحصن ٥ · مراجعة البعيد</span>
+          </div>
+        </div>
+        <div style="background:#1A2744;opacity:.85;border-radius:10px;padding:12px 16px;text-align:center;">
+          <span style="color:#C8963E;font-weight:800;font-size:13px;">الهيكل</span>
+          <div style="margin-top:6px;"><span style="background:#E65100;color:#fff;padding:4px 14px;border-radius:6px;font-size:12px;">الحصن ٣ · التحضير القبلي والحفظ الجديد</span></div>
+        </div>
+        <div style="background:#0D47A1;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#fff;font-weight:800;font-size:13px;">الأساسات</span>
+          <div style="display:flex;gap:8px;">
+            <span style="background:#1B5E20;color:#fff;padding:4px 12px;border-radius:6px;font-size:12px;">الحصن ١ · القراءة المستمرة</span>
+            <span style="background:#1565C0;color:#fff;padding:4px 12px;border-radius:6px;font-size:12px;">الحصن ٢ · الاستماع المنهجي</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="blueprint-card" style="background:linear-gradient(135deg,#0D1B0D,#1A2744);color:#fff;">
+      <h3 style="color:#C8963E;font-family:'Amiri',serif;">قاعدة "قُم يا حذيفة" — التحوّل الذهني</h3>
+      <p style="color:rgba(255,255,255,.8);">لم يقم حذيفة في البرد الشديد ليلة الأحزاب إلا عندما انتقل الأمر من الاستحباب إلى الوجوب: "قُم يا حذيفة".</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px;">
+        <div style="background:rgba(200,150,62,.15);border:1px solid #C8963E44;border-radius:10px;padding:12px;text-align:center;">
+          <div style="color:#C8963E;font-weight:800;font-size:13px;margin-bottom:4px;">الساعة الفريضة</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.7);">أول ٦٠ دقيقة من يومك للقرآن — فريضة لا تسقط</div>
+        </div>
+        <div style="background:rgba(200,150,62,.15);border:1px solid #C8963E44;border-radius:10px;padding:12px;text-align:center;">
+          <div style="color:#C8963E;font-weight:800;font-size:13px;margin-bottom:4px;">قاعدة المرونة</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.7);">ثبّت حضورك يومياً — تخفيض الكم أفضل من الانقطاع</div>
+        </div>
+        <div style="background:rgba(200,150,62,.15);border:1px solid #C8963E44;border-radius:10px;padding:12px;text-align:center;">
+          <div style="color:#C8963E;font-weight:800;font-size:13px;margin-bottom:4px;">إلغاء المثالية</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.7);">ابدأ الآن — لا تنتظر الظروف المزخرفة فهي لن تأتي</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Husun Details -->
+  <div class="guide-section" id="gs-husun">
+    <div class="blueprint-card bc-h1">
+      <h3><span class="hisn-badge hb-1">١</span> الحصن الأول — القراءة المستمرة (علاقة بصرية لا تنقطع)</h3>
+      <p>الهدف ليس الحفظ هنا، بل بناء ألفة بصرية وقلبية مع كامل المصحف لتسهيل الحفظ مستقبلاً.</p>
+      <div class="detail-grid">
+        <div class="detail-box"><div class="db-label">الكمية</div><div class="db-val">قراءة جزأين يومياً من المصحف نظراً</div></div>
+        <div class="detail-box"><div class="db-label">المعدل</div><div class="db-val">ختمة كاملة كل ١٥ يوماً (ختمتين شهرياً)</div></div>
+        <div class="detail-box"><div class="db-label">أفضل وقت</div><div class="db-val">اصطياد الأوقات المهدرة: ٥ دقائق بعد الصلوات، أوقات الانتظار، المواصلات</div></div>
+      </div>
+      <div class="gold-box"><p>⚠️ <strong>مهم:</strong> لا تخصص وقتاً ثابتاً طويلاً لهذا الحصن — انشره في يومك.</p></div>
+    </div>
+
+    <div class="blueprint-card bc-h2">
+      <h3><span class="hisn-badge hb-2">٢</span> الحصن الثاني — الاستماع المنهجي (ضبط البوصلة الصوتية)</h3>
+      <p>"الاستماع" يتطلب الانتباه والقصد والنظر في المصحف — عكس "السماع" العابر.</p>
+      <div class="detail-grid">
+        <div class="detail-box"><div class="db-label">الهدف</div><div class="db-val">تصحيح التلاوة وبناء روابط صوتية لا تُنسى</div></div>
+        <div class="detail-box"><div class="db-label">الآلية</div><div class="db-val">استماع يومي لوردك من القراء المتقنين (الحصري، المنشاوي، البنا)</div></div>
+        <div class="detail-box"><div class="db-label">تحذير</div><div class="db-val">إياك وتسريع القارئ — استمع للترتيل كما هو لضبط التجويد</div></div>
+      </div>
+    </div>
+
+    <div class="blueprint-card bc-h3">
+      <h3><span class="hisn-badge hb-3">٣</span> الحصن الثالث — التحضير والحفظ الجديد</h3>
+      <p>قمع التحضير الثلاثي يجعل الحفظ يستقر بسرعة أضعاف مضاعفة.</p>
+      <div class="detail-grid">
+        <div class="detail-box"><div class="db-label">التحضير الأسبوعي</div><div class="db-val">قراءة ما ستحفظه الأسبوع القادم يومياً كنظرة عامة</div></div>
+        <div class="detail-box"><div class="db-label">التحضير الليلي</div><div class="db-val">قبل النوم: ١٥ دقيقة استماع + ١٥ دقيقة قراءة بصرية لصفحة الغد</div></div>
+        <div class="detail-box"><div class="db-label">التحضير القبلي</div><div class="db-val">صباح يوم الحفظ: ١٥ دقيقة تسخين وقراءة نظراً بتركيز عالٍ قبل إغلاق المصحف</div></div>
+      </div>
+      <div class="gold-box"><p>⚠️ <strong>تجنب الطريقة الجزئية</strong> (حفظ آية تلو الأخرى دون ربط) — تقطع أوصال الصفحة وتدمر القدرة على السرد.</p></div>
+    </div>
+
+    <div class="blueprint-card bc-h4">
+      <h3><span class="hisn-badge hb-4">٤</span> الحصن الرابع — مراجعة القريب (العناية المركزة)</h3>
+      <p>الحفظ الجديد كالمولود الجديد — شديد التفلّت ويحتاج رعاية مكثفة قبل أن يعتمد على نفسه.</p>
+      <div class="detail-grid">
+        <div class="detail-box"><div class="db-label">النطاق</div><div class="db-val">آخر ٢٠ صفحة تم حفظها حصراً</div></div>
+        <div class="detail-box"><div class="db-label">الوتيرة</div><div class="db-val">تُراجع يومياً (غيباً من الصدر)</div></div>
+        <div class="detail-box"><div class="db-label">الديناميكية</div><div class="db-val">كلما حفظت صفحة جديدة تدخل — وتخرج أقدم صفحة لتنتقل لمراجعة البعيد</div></div>
+      </div>
+      <div style="margin-top:14px;text-align:center;">
+        <button onclick="showGuideSection('calculator', document.querySelector('.guide-nav-btn:nth-child(4)'))" style="background:linear-gradient(135deg,#880E4F,#C2185B);color:#fff;border:none;border-radius:10px;padding:10px 24px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;cursor:pointer;">
+          🧮 احسب خطة المراجعة الآن ←
+        </button>
+      </div>
+    </div>
+
+    <div class="blueprint-card bc-h5">
+      <h3><span class="hisn-badge hb-5">٥</span> الحصن الخامس — مراجعة البعيد (حراسة البناء القديم)</h3>
+      <p>الحفاظ على ما استقر في الذاكرة الطويلة ومنع تفلته بمرور الزمن.</p>
+      <div class="detail-grid">
+        <div class="detail-box"><div class="db-label">النطاق</div><div class="db-val">كل المحفوظ التراكمي ما عدا آخر ٢٠ صفحة</div></div>
+        <div class="detail-box"><div class="db-label">الوتيرة</div><div class="db-val">مرة واحدة أسبوعياً على الأقل (يختم مراجعته كل ٧ أيام)</div></div>
+        <div class="detail-box"><div class="db-label">أداة التنفيذ</div><div class="db-val">مهارة "الحَدّر" — القراءة السريعة المنضبطة بأحكام التجويد لاستيعاب الكم الكبير</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Principles -->
+  <div class="guide-section" id="gs-principles">
+    <div style="background:linear-gradient(135deg,#1A2744,#0D47A1);border-radius:16px;padding:20px;margin-bottom:20px;text-align:center;">
+      <div style="font-family:'Amiri',serif;font-size:18px;color:#C8963E;margin-bottom:6px;">محرك البناء</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.85);">التكرار أمّ المهارة</div>
+    </div>
+
+    <div class="principle-card">
+      <div class="principle-num">١</div>
+      <div><h4>مُشبِعاً — لا تتوقف بمجرد القدرة الأولية على التسميع</h4><p>كرر ٥٠، ١٠٠، أو ٥٠٠ مرة — اجعل سقف التكرار مفتوحاً. التكرار لا ينتهي بانتهاء لحظة الحفظ بل يمتد كظل للعملية بأكملها.</p></div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">٢</div>
+      <div><h4>مُوزَّعاً — تكرار ٦٠ مرة على ٣ مجالس منفصلة</h4><p>أفضل بكثير من تكرارها ٦٠ مرة في مجلس واحد مُرهق. الذاكرة الطويلة تتشكل في فترات الراحة بين المجالس.</p></div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">٣</div>
+      <div><h4>مُدعَّماً — ادعم مناطق الضعف</h4><p>مثل الخواتيم المتشابهة والآيات التي يتعثر فيها الحافظ دائماً — بالرجوع للتفسير لفهم سبب الختام.</p></div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">٤</div>
+      <div><h4>مُستمراً — الحضور اليومي فوق كل شيء</h4><p>حتى لو ١٠ دقائق. الانقطاع التام هو العدو الأول. "القليل الدائم خير من الكثير المنقطع".</p></div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">٥</div>
+      <div><h4>عالج النية بالعمل — لا تنتظر كمال النية</h4><p>ابدأ حتى لو شعرت بتشويش أو وسوسة في نيتك. ببركة الاستمرار مع القرآن ستصفو النية وتطهر.</p></div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">٦</div>
+      <div><h4>لا تلبس ثوب غيرك — احفظ بالكم الذي يناسبك</h4><p>ولو نصف صفحة. المهم هو الاستمرار. لا تقارن نفسك بغيرك فلكل شخص ظروفه وطاقته.</p></div>
+    </div>
+
+    <div style="background:linear-gradient(135deg,#1A2744,#1B5E20);border-radius:16px;padding:20px;margin-top:8px;text-align:center;">
+      <div style="font-family:'Amiri',serif;font-size:16px;color:#C8963E;margin-bottom:8px;">"لا تنتظر الظروف المثالية"</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.85);">الآن، افتح مصحفك وتوكل على الله.</div>
+    </div>
+  </div>
+
+  <!-- Calculator -->
+  <div class="guide-section" id="gs-calculator">
+
+    <!-- AI Calculator Card -->
+    <div class="calc-card" style="border:2px solid #880E4F22;">
+      <h3 style="color:#880E4F;">🤖 المساعد الذكي لحسابات المراجعة</h3>
+      <p style="font-size:12px;color:#666;margin-bottom:16px;line-height:1.8;">
+        أخبرني بالسور التي أتممت حفظها بأي طريقة تريد — وسأحسب لك خطة المراجعة الكاملة تلقائياً.
+      </p>
+
+      <!-- Example chips -->
+      <div style="margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:700;color:#888;margin-bottom:8px;">أمثلة سريعة:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          <button onclick="setExample(this)" data-ex="أتممت حفظ جزء عم وتبارك (من سورة الملك إلى الناس)" style="background:#FFF0F6;border:1px solid #F48FB1;border-radius:20px;padding:5px 12px;font-size:11px;color:#880E4F;cursor:pointer;font-family:'Tajawal',sans-serif;">جزء عم + تبارك</button>
+          <button onclick="setExample(this)" data-ex="حفظت من سورة البقرة إلى سورة النساء" style="background:#E8F5E9;border:1px solid #A5D6A7;border-radius:20px;padding:5px 12px;font-size:11px;color:#1B5E20;cursor:pointer;font-family:'Tajawal',sans-serif;">البقرة إلى النساء</button>
+          <button onclick="setExample(this)" data-ex="أتممت حفظ الأجزاء الثلاثة الأخيرة من القرآن" style="background:#E3F2FD;border:1px solid #90CAF9;border-radius:20px;padding:5px 12px;font-size:11px;color:#0D47A1;cursor:pointer;font-family:'Tajawal',sans-serif;">آخر ٣ أجزاء</button>
+          <button onclick="setExample(this)" data-ex="حفظت سورة يس والصافات وص والزمر" style="background:#F3E5F5;border:1px solid #CE93D8;border-radius:20px;padding:5px 12px;font-size:11px;color:#4A148C;cursor:pointer;font-family:'Tajawal',sans-serif;">يس والصافات وص والزمر</button>
+        </div>
+      </div>
+
+      <!-- Input -->
+      <div class="calc-group">
+        <label>اكتب السور التي حفظتها (بأي أسلوب)</label>
+        <textarea id="aiCalcInput" rows="3" placeholder="مثال: أتممت حفظ جزء عم وتبارك، أو: حفظت من سورة الكهف إلى سورة الفرقان..." style="width:100%;padding:12px 14px;border:1.5px solid #DDD8CC;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:14px;color:#1A1A2E;background:#FAFAF7;direction:rtl;resize:vertical;transition:border-color .2s;line-height:1.7;"></textarea>
+      </div>
+
+      <button class="btn-calc" id="aiCalcBtn" onclick="runAICalc()">
+        🧮 احسب خطة المراجعة بالذكاء الاصطناعي ←
+      </button>
+    </div>
+
+    <!-- Thinking indicator -->
+    <div id="aiCalcThinking" style="display:none;text-align:center;padding:32px 16px;">
+      <div style="width:44px;height:44px;border:3px solid #FCE4EC;border-top-color:#C2185B;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px;"></div>
+      <div style="font-size:14px;color:#880E4F;font-weight:600;">المساعد يحسب خطتك...</div>
+      <div style="font-size:12px;color:#999;margin-top:6px;">يراجع بيانات مصحف المدينة المنورة</div>
+    </div>
+
+    <!-- AI Result -->
+    <div id="aiCalcResult" style="display:none;">
+      <div id="aiCalcContent"></div>
+    </div>
+
+    <!-- Info box -->
+    <div style="background:linear-gradient(135deg,#FFF8E8,#FFF0CC);border:1px solid #E8C06066;border-radius:14px;padding:16px;margin-top:16px;">
+      <div style="font-size:12px;color:#5D4000;line-height:1.9;">
+        <strong style="color:#C8963E;">📌 قواعد المنهجية:</strong><br>
+        • <strong>مراجعة القريب:</strong> آخر ٢٠ صفحة حُفظت — تُراجع يومياً من الصدر<br>
+        • <strong>مراجعة البعيد:</strong> كل المحفوظ ما عدا آخر ٢٠ صفحة — تُختم كل ٧ أيام<br>
+        • <strong>الديناميكية:</strong> كل صفحة جديدة تدخل القريب وتخرج أقدم صفحة للبعيد
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP PAGE ══ -->
+<div class="page" id="appPage">
+  <div class="app-header">
+    <div class="app-header-title">
+      <div class="bismillah-sm">بسم الله الرحمن الرحيم</div>
+      <h1>جدول الحصون الخمسة</h1>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <div class="user-badge">
+        <div>
+          <div class="user-name" id="headerName">—</div>
+          <div class="user-email" id="headerEmail">—</div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="logout()" title="تسجيل خروج">↩</button>
+    </div>
+  </div>
+
+  
+  <!-- Achievements Bar -->
+  <div class="achievements-bar" id="achievementsBar">
+    <div class="badge-item"><div class="badge-icon locked" id="badge0">🌱</div><div class="badge-label">أول أسبوع</div></div>
+    <div class="badge-item"><div class="badge-icon locked" id="badge1">⭐</div><div class="badge-label">شهر متواصل</div></div>
+    <div class="badge-item"><div class="badge-icon locked" id="badge2">🏆</div><div class="badge-label">٣ أشهر</div></div>
+    <div class="badge-item"><div class="badge-icon locked" id="badge3">📖</div><div class="badge-label">ختمة كاملة</div></div>
+    <div class="badge-item"><div class="badge-icon locked" id="badge4">🔥</div><div class="badge-label">٧ أيام متتالية</div></div>
+    <div class="badge-item"><div class="badge-icon locked" id="badge5">💎</div><div class="badge-label">حصن مكتمل</div></div>
+    <div style="margin-right:auto;display:flex;align-items:center;gap:6px;margin-left:8px;">
+      <button onclick="openReport()" style="background:#E8F5E9;border:1px solid #A5D6A7;border-radius:20px;padding:6px 12px;font-size:11px;font-weight:700;color:#1B5E20;cursor:pointer;font-family:'Tajawal',sans-serif;white-space:nowrap;">📊 التقرير</button>
+      <button onclick="openMap()" style="background:#E3F2FD;border:1px solid #90CAF9;border-radius:20px;padding:6px 12px;font-size:11px;font-weight:700;color:#0D47A1;cursor:pointer;font-family:'Tajawal',sans-serif;white-space:nowrap;">🗺️ خريطتي</button>
+      <button onclick="openGroups()" style="background:#F3E5F5;border:1px solid #CE93D8;border-radius:20px;padding:6px 12px;font-size:11px;font-weight:700;color:#4A148C;cursor:pointer;font-family:'Tajawal',sans-serif;white-space:nowrap;">👥 مجموعتي</button>
+    </div>
+  </div>
+  <div class="main-nav">
+    <button class="nav-tab active" id="navTracker" onclick="switchMainTab('tracker')">
+      <span class="nav-icon">📋</span>الجدول
+    </button>
+    <button class="nav-tab" id="navGuide" onclick="switchMainTab('guide')">
+      <span class="nav-icon">📖</span>الدليل
+    </button>
+    <button class="nav-tab" id="navCalc" onclick="switchMainTab('calc')">
+      <span class="nav-icon">🧮</span>الحاسبة
+    </button>
+  </div>
+  <div class="sync-bar">
+    <div class="sync-dot" id="syncDot"></div>
+    <span id="syncLabel">جاري الاتصال...</span>
+  </div>
+
+  <div class="info-bar">
+    <div class="week-nav">
+      <button onclick="prevWeek()">›</button>
+      <span class="week-label" id="weekNavLabel">الأسبوع 1</span>
+      <button onclick="nextWeek()">‹</button>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn-sm btn-print" onclick="window.print()">🖨️ طباعة</button>
+    </div>
+  </div>
+
+  <div class="stats-strip">
+    <div class="stat-pill sp-h1"><div class="s-label">الحصن الأول</div><div class="s-bar"><div class="s-fill" id="sf1" style="width:0%"></div></div><div class="s-count" id="sc1">0/21</div></div>
+    <div class="stat-pill sp-h2"><div class="s-label">الحصن الثاني</div><div class="s-bar"><div class="s-fill" id="sf2" style="width:0%"></div></div><div class="s-count" id="sc2">0/21</div></div>
+    <div class="stat-pill sp-h3"><div class="s-label">الحصن الثالث</div><div class="s-bar"><div class="s-fill" id="sf3" style="width:0%"></div></div><div class="s-count" id="sc3">0/7</div></div>
+    <div class="stat-pill sp-h4"><div class="s-label">الحصن الرابع</div><div class="s-bar"><div class="s-fill" id="sf4" style="width:0%"></div></div><div class="s-count" id="sc4">0/7</div></div>
+    <div class="stat-pill sp-h5"><div class="s-label">الحصن الخامس</div><div class="s-bar"><div class="s-fill" id="sf5" style="width:0%"></div></div><div class="s-count" id="sc5">0/7</div></div>
+  </div>
+
+  <div class="week-tabs" id="weekTabs"></div>
+
+  <div class="table-outer">
+    <div class="table-container">
+      <div id="completeBanner" class="complete-banner">🎉 أحسنت! أكملت جميع حصون هذا الأسبوع!</div>
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="2" class="gh gh-meta" style="min-width:30px;">أسبوع</th>
+            <th rowspan="2" class="gh gh-meta" style="min-width:60px;">اليوم</th>
+            <th rowspan="2" class="gh gh-meta" style="min-width:78px;">التاريخ</th>
+            <th colspan="3" class="gh gh-h1">الحصن الأول</th>
+            <th colspan="3" class="gh gh-h2">الحصن الثاني</th>
+            <th colspan="2" class="gh gh-h3">الحصن الثالث</th>
+            <th colspan="2" class="gh gh-h4">الحصن الرابع</th>
+            <th colspan="2" class="gh gh-h5">الحصن الخامس</th>
+          </tr>
+          <tr>
+            <th class="sh sh-h1">قراءة مستمرة<br><small>(جزءان)</small></th>
+            <th class="sh sh-h1">استماع منهجي<br><small>(حزب)</small></th>
+            <th class="sh sh-h1">أسبوعي</th>
+            <th class="sh sh-h2">ليل</th><th class="sh sh-h2">قبل</th><th class="sh sh-h2">حفظ جديد</th>
+            <th class="sh sh-h3">مراجعة القريب<br><small>(٢٠ص)</small></th><th class="sh sh-h3">ملاحظات</th>
+            <th class="sh sh-h4">مراجعة البعيد</th><th class="sh sh-h4">ملاحظات</th>
+            <th class="sh sh-h5">التخصصي</th><th class="sh sh-h5">ملاحظات</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="app-footer">
+    <div class="dua">اللهم اجعلنا من أهل القرآن الذين هم أهلك وخاصتك</div>
+    <div>البيانات محفوظة سحابياً</div>
+  </div>
+</div>
+
+<!-- ══ ADMIN PAGE ══ -->
+<div class="page" id="adminPage">
+  <div class="admin-header">
+    <h2>🛡️ لوحة الإدارة <span>ADMIN</span></h2>
+    <button class="btn-admin-logout" onclick="adminLogout()">← خروج</button>
+  </div>
+  <div class="admin-stats" id="adminStats">
+    <div class="admin-stat-card"><div class="asc-val" id="statTotal">—</div><div class="asc-label">إجمالي المستخدمين</div></div>
+    <div class="admin-stat-card"><div class="asc-val" id="statToday">—</div><div class="asc-label">سجّل اليوم</div></div>
+    <div class="admin-stat-card"><div class="asc-val" id="statWeek">—</div><div class="asc-label">سجّل هذا الأسبوع</div></div>
+    <div class="admin-stat-card"><div class="asc-val" id="statActive">—</div><div class="asc-label">نشط آخر 24 ساعة</div></div>
+  </div>
+  <div class="admin-search">
+    <input type="text" id="adminSearch" placeholder="🔍 ابحث بالاسم أو الإيميل..." oninput="filterUsers()">
+    <button class="btn-refresh" onclick="loadAdminUsers()">↻ تحديث</button>
+  </div>
+  <div class="users-table-wrap">
+    <div id="adminUsersContainer">
+      <div class="loading-spinner"><div class="spin"></div><span>جاري التحميل...</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADMIN LOGIN MODAL ══ -->
+<div class="modal-overlay" id="adminModal">
+  <div class="modal-card">
+    <h3>🔐 لوحة الإدارة</h3>
+    <p>أدخل كلمة المرور للوصول</p>
+    <input type="password" id="adminPassInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')confirmAdmin()">
+    <div class="modal-err" id="modalErr">كلمة المرور غير صحيحة</div>
+    <div class="modal-btns">
+      <button class="btn-modal-confirm" onclick="confirmAdmin()">دخول</button>
+      <button class="btn-modal-cancel" onclick="closeAdminModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Weekly Report Modal -->
+<div class="report-modal" id="reportModal">
+  <div class="report-card">
+    <div class="report-header">
+      <h3>📊 التقرير الأسبوعي</h3>
+      <p id="reportWeekLabel">الأسبوع الحالي</p>
+    </div>
+    <div class="report-body">
+      <div class="report-compare">
+        <div class="rc-pct" id="reportPct">0%</div>
+        <div class="rc-label">نسبة الإنجاز هذا الأسبوع</div>
+        <div style="font-size:11px;color:#666;margin-top:4px;" id="reportCompare"></div>
+      </div>
+      <div id="reportStats"></div>
+    </div>
+    <button class="btn-close-report" onclick="closeReport()">إغلاق</button>
+  </div>
+</div>
+
+<!-- Memorization Map Modal -->
+<div class="map-modal" id="mapModal">
+  <div class="map-container">
+    <h3>🗺️ خريطة حفظي</h3>
+    <p>كل خانة = صفحة من القرآن الكريم (٦٠٤ صفحة)</p>
+    <div class="map-input-row">
+      <select id="mapSurahSelect" onchange="updateMapFromSurah()">
+        <option value="">آخر سورة حفظتها...</option>
+      </select>
+      <button class="btn-update-map" onclick="saveMap()">حفظ ✓</button>
+    </div>
+    <div class="quran-grid" id="quranGrid"></div>
+    <div class="map-legend">
+      <div><span class="legend-dot" style="background:#1B5E20;"></span>محفوظ (بعيد)</div>
+      <div><span class="legend-dot" style="background:#C2185B;"></span>قريب (٢٠ص)</div>
+      <div><span class="legend-dot" style="background:#2a2a3e;"></span>لم يُحفظ</div>
+    </div>
+    <button onclick="closeMap()" style="width:100%;padding:10px;margin-top:12px;border:1px solid #2a2a3e;border-radius:8px;background:transparent;color:#888;cursor:pointer;font-family:'Tajawal',sans-serif;">إغلاق</button>
+  </div>
+</div>
+
+<!-- Groups Modal -->
+<div class="groups-modal" id="groupsModal">
+  <div class="groups-card">
+    <div class="groups-header">
+      <h3 style="color:#fff;font-size:18px;font-weight:800;">👥 المجموعات</h3>
+      <p style="color:rgba(255,255,255,.7);font-size:12px;">تابع تقدمك مع أصدقائك</p>
+    </div>
+    <div class="groups-body">
+      <div id="groupContent">
+        <button class="btn-group-action btn-create-group" onclick="createGroup()">+ إنشاء مجموعة جديدة</button>
+        <button class="btn-group-action btn-join-group" onclick="joinGroupPrompt()">← الانضمام لمجموعة بكود</button>
+        <div id="myGroupSection" style="display:none;"></div>
+      </div>
+    </div>
+    <button onclick="closeGroups()" style="width:100%;padding:12px;border:none;background:#F2F0EB;border-radius:0 0 20px 20px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;color:#444;">إغلاق</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- Fixed admin button - always visible -->
+<div id="fixedAdminBtn" onclick="openAdminModal()" style="position:fixed;bottom:20px;left:20px;z-index:8888;background:rgba(0,0,0,0.55);color:rgba(255,255,255,0.45);border:1px solid rgba(255,255,255,0.15);border-radius:20px;padding:6px 14px;font-size:11px;cursor:pointer;font-family:Tajawal,sans-serif;font-weight:600;backdrop-filter:blur(6px);transition:all 0.2s;user-select:none;" onmouseover="this.style.color='rgba(200,150,62,1)';this.style.borderColor='rgba(200,150,62,0.5)'" onmouseout="this.style.color='rgba(255,255,255,0.45)';this.style.borderColor='rgba(255,255,255,0.15)'">🔐 أدمن</div>
+
+<script>
+// -- CONFIG ----------------------------------------
+const SUPA_URL = 'https://nwqjhdxzwzxwdkfjvjij.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53cWpoZHh6d3p4d2RrZmp2amlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5MzUxMDEsImV4cCI6MjA5MjUxMTEwMX0.nXmyWi8Uw5PqkViz60_409Mxi-k-QGx2PTH5Gn-L13Y';
+const ADMIN_PASS = 'Quran2024@Admin'; // ← غيّر هذا الباسورد
+const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+const DAYS = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+
+let currentUser = null;
+let state = { weeks:[], currentWeek:0 };
+let syncTimer = null;
+let allAdminUsers = [];
+
+// -- SHOW PAGE -------------------------------------
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function hideLoader() { document.getElementById('fullLoader').classList.add('hidden'); }
+function setLoader(msg) { document.getElementById('loaderMsg').textContent = msg; document.getElementById('fullLoader').classList.remove('hidden'); }
+
+// -- INIT ------------------------------------------
+async function init() {
+  setLoader('جاري التحميل...');
+  const saved = localStorage.getItem('husun_session');
+  if (saved) {
+    try {
+      currentUser = JSON.parse(saved);
+      setLoader('مرحباً ' + currentUser.full_name + '...');
+      await updateLastSeen();
+      await loadUserData();
+      showPage('appPage');
+      setupAppHeader();
+    } catch(e) { localStorage.removeItem('husun_session'); showPage('registerPage'); }
+  } else {
+    showPage('registerPage');
+  }
+  hideLoader();
+}
+
+// -- REGISTER --------------------------------------
+async function handleRegister() {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim().toLowerCase();
+  let valid = true;
+  if (!name) { document.getElementById('errName').classList.add('show'); document.getElementById('regName').classList.add('error'); valid=false; } else { document.getElementById('errName').classList.remove('show'); document.getElementById('regName').classList.remove('error'); }
+  if (!email || !email.includes('@')) { document.getElementById('errEmail').classList.add('show'); document.getElementById('regEmail').classList.add('error'); valid=false; } else { document.getElementById('errEmail').classList.remove('show'); document.getElementById('regEmail').classList.remove('error'); }
+  if (!valid) return;
+
+  const btn = document.getElementById('btnRegister');
+  btn.disabled = true; btn.textContent = 'جاري التسجيل...';
+
+  try {
+    // Check if email exists
+    const { data: existing } = await sb.from('husun_users').select('*').eq('email', email).single();
+    if (existing) {
+      currentUser = existing;
+      await sb.from('husun_users').update({ last_seen_at: new Date().toISOString(), visit_count: existing.visit_count + 1 }).eq('id', existing.id);
+      currentUser.visit_count = existing.visit_count + 1;
+    } else {
+      const userKey = 'u_' + Math.random().toString(36).slice(2,10) + Date.now().toString(36);
+      const { data: newUser, error } = await sb.from('husun_users').insert({ full_name: name, email, user_key: userKey }).select().single();
+      if (error) throw error;
+      currentUser = newUser;
+    }
+    localStorage.setItem('husun_session', JSON.stringify(currentUser));
+    await loadUserData();
+    setupAppHeader();
+    showPage('appPage');
+    showToast('مرحباً ' + currentUser.full_name + ' 🌿');
+  } catch(e) {
+    showToast('حدث خطأ، حاول مجدداً');
+    console.error(e);
+  }
+  btn.disabled = false; btn.textContent = 'دخول ← ابدأ رحلتك مع القرآن';
+}
+
+async function handleReturnUser() {
+  const email = prompt('أدخل بريدك الإلكتروني:');
+  if (!email) return;
+  const { data } = await sb.from('husun_users').select('*').eq('email', email.trim().toLowerCase()).single();
+  if (data) {
+    currentUser = data;
+    localStorage.setItem('husun_session', JSON.stringify(currentUser));
+    await updateLastSeen();
+    await loadUserData();
+    setupAppHeader();
+    showPage('appPage');
+    showToast('مرحباً بعودتك ' + currentUser.full_name + ' 🌿');
+  } else {
+    showToast('لم يتم إيجاد هذا الإيميل — سجّل أولاً');
+  }
+}
+
+async function updateLastSeen() {
+  if (!currentUser) return;
+  await sb.from('husun_users').update({ last_seen_at: new Date().toISOString(), visit_count: (currentUser.visit_count||0)+1 }).eq('id', currentUser.id);
+}
+
+function setupAppHeader() {
+  document.getElementById('headerName').textContent = currentUser.full_name;
+  document.getElementById('headerEmail').textContent = currentUser.email;
+}
+
+function logout() {
+  if (!confirm('هل تريد تسجيل الخروج؟')) return;
+  localStorage.removeItem('husun_session');
+  currentUser = null;
+  state = { weeks:[], currentWeek:0 };
+  showPage('registerPage');
+}
+
+// -- SYNC STATUS -----------------------------------
+function setSyncStatus(s, label) {
+  document.getElementById('syncDot').className = 'sync-dot ' + s;
+  document.getElementById('syncLabel').textContent = label;
+}
+
+// -- LOAD USER DATA --------------------------------
+async function loadUserData() {
+  setSyncStatus('syncing','جاري تحميل بياناتك...');
+  try {
+    const { data: prof } = await sb.from('husun_profiles').select('*').eq('user_key', currentUser.user_key).single();
+    const { data: weeks } = await sb.from('husun_weeks').select('*').eq('user_key', currentUser.user_key).order('week_num');
+    if (!weeks || weeks.length === 0) { state.weeks = []; await addWeek(); setSyncStatus('synced','محفوظ ✓'); return; }
+    const { data: rows } = await sb.from('husun_rows').select('*').eq('user_key', currentUser.user_key);
+    const rowMap = {};
+    (rows||[]).forEach(r => { rowMap[`${r.week_num}_${r.day_index}`] = r; });
+    state.weeks = weeks.map(w => ({
+      num: w.week_num,
+      rows: DAYS.map((d,i) => {
+        const r = rowMap[`${w.week_num}_${i}`] || {};
+        return { day:d, date:r.date_text||'', h1a:r.h1a||false, h1b:r.h1b||false, h1c:r.h1c||false, h2a:r.h2a||false, h2b:r.h2b||false, h2c:r.h2c||false, h3a:r.h3a||false, h3n:r.h3n||'', h4a:r.h4a||false, h4n:r.h4n||'', h5a:r.h5a||false, h5n:r.h5n||'' };
+      })
+    }));
+    state.currentWeek = 0;
+    setSyncStatus('synced','محفوظ سحابياً ✓');
+    renderTabs(); renderTable(); updateStats();
+  } catch(e) { setSyncStatus('error','خطأ في الاتصال'); }
+}
+
+function scheduleSync() {
+  setSyncStatus('syncing','جاري الحفظ...');
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(syncToCloud, 700);
+}
+
+async function syncToCloud() {
+  try {
+    await sb.from('husun_profiles').upsert({ user_key:currentUser.user_key, student_name:currentUser.full_name, dar_name:'', updated_at:new Date().toISOString() }, {onConflict:'user_key'});
+    for (const week of state.weeks) {
+      await sb.from('husun_weeks').upsert({ user_key:currentUser.user_key, week_num:week.num }, {onConflict:'user_key,week_num'});
+      for (let i=0;i<week.rows.length;i++) {
+        const r=week.rows[i];
+        await sb.from('husun_rows').upsert({ user_key:currentUser.user_key, week_num:week.num, day_index:i, date_text:r.date, h1a:r.h1a, h1b:r.h1b, h1c:r.h1c, h2a:r.h2a, h2b:r.h2b, h2c:r.h2c, h3a:r.h3a, h3n:r.h3n, h4a:r.h4a, h4n:r.h4n, h5a:r.h5a, h5n:r.h5n, updated_at:new Date().toISOString() }, {onConflict:'user_key,week_num,day_index'});
+      }
+    }
+    setSyncStatus('synced','محفوظ سحابياً ✓ · '+new Date().toLocaleTimeString('ar'));
+  } catch(e) { setSyncStatus('error','خطأ في الحفظ'); }
+}
+
+// -- WEEK MANAGEMENT -------------------------------
+async function addWeek() {
+  const num = state.weeks.length+1;
+  state.weeks.push({num, rows:DAYS.map(d=>({day:d,date:'',h1a:false,h1b:false,h1c:false,h2a:false,h2b:false,h2c:false,h3a:false,h3n:'',h4a:false,h4n:'',h5a:false,h5n:''}))});
+  state.currentWeek = state.weeks.length-1;
+  renderTabs(); renderTable(); updateStats(); scheduleSync();
+}
+function switchWeek(i) { state.currentWeek=i; document.getElementById('weekNavLabel').textContent='الأسبوع '+(i+1); renderTabs(); renderTable(); updateStats(); }
+function prevWeek() { if(state.currentWeek>0) switchWeek(state.currentWeek-1); }
+function nextWeek() { if(state.currentWeek<state.weeks.length-1) switchWeek(state.currentWeek+1); else addWeek(); }
+
+function renderTabs() {
+  const c=document.getElementById('weekTabs'); c.innerHTML='';
+  state.weeks.forEach((w,i)=>{
+    const hd=w.rows.some(r=>r.h1a||r.h1b||r.h2a||r.h3a||r.h4a||r.h5a);
+    const t=document.createElement('div'); t.className='week-tab'+(i===state.currentWeek?' active':'')+(hd?' has-data':'');
+    t.innerHTML=`<span class="tab-dot"></span>الأسبوع ${w.num}`; t.onclick=()=>switchWeek(i); c.appendChild(t);
+  });
+  const ab=document.createElement('button'); ab.className='btn-add-week'; ab.textContent='+ أسبوع جديد'; ab.onclick=addWeek; c.appendChild(ab);
+  document.getElementById('weekNavLabel').textContent='الأسبوع '+(state.currentWeek+1);
+}
+
+function renderTable() {
+  const week=state.weeks[state.currentWeek];
+  const tbody=document.getElementById('tableBody'); tbody.innerHTML='';
+  week.rows.forEach((row,ri)=>{
+    const tr=document.createElement('tr'); tr.className=ri%2===0?'row-even':'row-odd';
+    if(ri===0){const wc=document.createElement('td');wc.rowSpan=7;wc.className='week-num-cell';wc.textContent=week.num;tr.appendChild(wc);}
+    const dc=document.createElement('td');dc.className='day-label';dc.textContent=row.day;tr.appendChild(dc);
+    const dtc=document.createElement('td');dtc.className='date-input-cell';
+    const dti=document.createElement('input');dti.type='text';dti.placeholder='التاريخ';dti.value=row.date;dti.oninput=e=>{row.date=e.target.value;scheduleSync();};
+    dtc.appendChild(dti);tr.appendChild(dtc);
+    [['h1a','c-h1'],['h1b','c-h1'],['h1c','c-h1'],['h2a','c-h2'],['h2b','c-h2'],['h2c','c-h2'],['h3a','c-h3']].forEach(([f,cl])=>tr.appendChild(mkChk(row,f,cl,week)));
+    tr.appendChild(mkNote(row,'h3n'));
+    tr.appendChild(mkChk(row,'h4a','c-h4',week));tr.appendChild(mkNote(row,'h4n'));
+    tr.appendChild(mkChk(row,'h5a','c-h5',week));tr.appendChild(mkNote(row,'h5n'));
+    tbody.appendChild(tr);
+  });
+  const t=calcTotals(week);
+  const trow=document.createElement('tr');trow.className='total-row';
+  trow.innerHTML=`<td colspan="3" style="text-align:right;padding-right:10px;">الإجمالي</td><td class="tc-h1">${t.h1a}/7</td><td class="tc-h1">${t.h1b}/7</td><td class="tc-h1">${t.h1c}/7</td><td class="tc-h2">${t.h2a}/7</td><td class="tc-h2">${t.h2b}/7</td><td class="tc-h2">${t.h2c}/7</td><td class="tc-h3">${t.h3a}/7</td><td class="tc-h3">—</td><td class="tc-h4">${t.h4a}/7</td><td class="tc-h4">—</td><td class="tc-h5">${t.h5a}/7</td><td class="tc-h5">—</td>`;
+  tbody.appendChild(trow);
+  const done=['h1a','h1b','h2a','h2b','h2c','h3a','h4a','h5a'].every(f=>week.rows.every(r=>r[f]));
+  document.getElementById('completeBanner').style.display=done?'block':'none';
+}
+function mkChk(row,field,cls,week){
+  const td=document.createElement('td');td.className='check-cell '+cls+(row[field]?' checked':'');
+  const ic=document.createElement('span');ic.className='check-icon';ic.textContent=row[field]?'✅':'⬜';td.appendChild(ic);
+  td.onclick=()=>{row[field]=!row[field];td.classList.toggle('checked',row[field]);ic.textContent=row[field]?'✅':'⬜';updateStats();scheduleSync();const done=['h1a','h1b','h2a','h2b','h2c','h3a','h4a','h5a'].every(f=>week.rows.every(r=>r[f]));document.getElementById('completeBanner').style.display=done?'block':'none';if(done)showToast('🎉 أكملت جميع حصون الأسبوع!');};
+  return td;
+}
+function mkNote(row,field){
+  const td=document.createElement('td');td.className='note-cell';
+  const inp=document.createElement('input');inp.type='text';inp.placeholder='...';inp.value=row[field]||'';inp.oninput=e=>{row[field]=e.target.value;scheduleSync();};
+  td.appendChild(inp);return td;
+}
+function calcTotals(week){const t={h1a:0,h1b:0,h1c:0,h2a:0,h2b:0,h2c:0,h3a:0,h4a:0,h5a:0};week.rows.forEach(r=>Object.keys(t).forEach(k=>{if(r[k])t[k]++;}));return t;}
+function updateStats(){
+  const week=state.weeks[state.currentWeek];if(!week)return;
+  const t=calcTotals(week);const h1=t.h1a+t.h1b+t.h1c,h2=t.h2a+t.h2b+t.h2c;
+  [[1,h1,21],[2,h2,21],[3,t.h3a,7],[4,t.h4a,7],[5,t.h5a,7]].forEach(([i,v,mx])=>{document.getElementById('sf'+i).style.width=Math.round(v/mx*100)+'%';document.getElementById('sc'+i).textContent=v+'/'+mx;});
+  renderTabs();
+}
+
+// -- ADMIN -----------------------------------------
+function openAdminModal(){ document.getElementById('adminModal').classList.add('open'); document.getElementById('adminPassInput').value=''; document.getElementById('modalErr').classList.remove('show'); setTimeout(()=>document.getElementById('adminPassInput').focus(),100); }
+function closeAdminModal(){ document.getElementById('adminModal').classList.remove('open'); }
+function confirmAdmin(){
+  const pass=document.getElementById('adminPassInput').value;
+  if(pass===ADMIN_PASS){ closeAdminModal(); showPage('adminPage'); loadAdminUsers(); }
+  else{ document.getElementById('modalErr').classList.add('show'); document.getElementById('adminPassInput').value=''; document.getElementById('adminPassInput').focus(); }
+}
+function adminLogout(){ showPage('registerPage'); }
+
+async function loadAdminUsers(){
+  document.getElementById('adminUsersContainer').innerHTML='<div class="loading-spinner"><div class="spin"></div><span>جاري التحميل...</span></div>';
+  const { data } = await sb.from('husun_users').select('*').order('registered_at',{ascending:false});
+  allAdminUsers = data||[];
+  renderAdminStats(allAdminUsers);
+  renderUsersTable(allAdminUsers);
+}
+
+function renderAdminStats(users){
+  const now=new Date();
+  const today=users.filter(u=>new Date(u.registered_at).toDateString()===now.toDateString()).length;
+  const weekAgo=new Date(now-7*86400000);
+  const week=users.filter(u=>new Date(u.registered_at)>=weekAgo).length;
+  const dayAgo=new Date(now-86400000);
+  const active=users.filter(u=>new Date(u.last_seen_at)>=dayAgo).length;
+  document.getElementById('statTotal').textContent=users.length;
+  document.getElementById('statToday').textContent=today;
+  document.getElementById('statWeek').textContent=week;
+  document.getElementById('statActive').textContent=active;
+}
+
+function renderUsersTable(users){
+  if(!users.length){ document.getElementById('adminUsersContainer').innerHTML='<div class="empty-state"><div class="es-icon">📭</div><p style="color:#555">لا يوجد مستخدمون بعد</p></div>'; return; }
+  const now=new Date();
+  const dayAgo=new Date(now-86400000);
+  const weekAgo=new Date(now-7*86400000);
+  let html=`<table class="users-table"><thead><tr><th>#</th><th>المستخدم</th><th>البريد الإلكتروني</th><th>تاريخ التسجيل</th><th>آخر دخول</th><th>الزيارات</th><th>ملاحظات</th></tr></thead><tbody>`;
+  users.forEach((u,i)=>{
+    const reg=new Date(u.registered_at);
+    const last=new Date(u.last_seen_at);
+    const isNew=reg>=weekAgo;
+    const isActive=last>=dayAgo;
+    const initials=u.full_name.split(' ').map(w=>w[0]).slice(0,2).join('');
+    html+=`<tr>
+      <td style="color:#555;font-size:12px;">${i+1}</td>
+      <td><div class="user-row-info"><div class="user-avatar">${initials}</div><div><div class="user-name-cell">${u.full_name}${isNew?'<span class="badge-new">جديد</span>':''}${isActive?'<span class="badge-active">نشط</span>':''}</div><div style="font-size:11px;color:#666;">${u.user_key}</div></div></div></td>
+      <td style="direction:ltr;text-align:left;color:#aaa;">${u.email}</td>
+      <td style="font-size:12px;color:#888;">${reg.toLocaleDateString('ar-EG')}<br><span style="font-size:10px;color:#555;">${reg.toLocaleTimeString('ar')}</span></td>
+      <td style="font-size:12px;color:#888;">${last.toLocaleDateString('ar-EG')}<br><span style="font-size:10px;color:#555;">${last.toLocaleTimeString('ar')}</span></td>
+      <td><span class="visits-badge">${u.visit_count||1}</span></td>
+      <td><button class="btn-note-edit" onclick="editNote('${u.id}','${(u.notes||'').replace(/'/g,"\\'")}')">📝 ${u.notes?'تعديل':'إضافة'}</button></td>
+    </tr>`;
+  });
+  html+='</tbody></table>';
+  document.getElementById('adminUsersContainer').innerHTML=html;
+}
+
+function filterUsers(){
+  const q=document.getElementById('adminSearch').value.toLowerCase();
+  const filtered=allAdminUsers.filter(u=>u.full_name.toLowerCase().includes(q)||u.email.toLowerCase().includes(q));
+  renderUsersTable(filtered);
+}
+
+async function editNote(userId, currentNote){
+  const note=prompt('أضف ملاحظة لهذا المستخدم:', currentNote||'');
+  if(note===null)return;
+  await sb.from('husun_users').update({notes:note}).eq('id',userId);
+  showToast('تم حفظ الملاحظة ✓');
+  loadAdminUsers();
+}
+
+// -- TOAST -----------------------------------------
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+
+init();
+
+// -- GUIDE & CALCULATOR -----------------------------------------------------
+function showGuideSection(id, btn) {
+  document.querySelectorAll('.guide-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.guide-nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('gs-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  else {
+    const btns = document.querySelectorAll('.guide-nav-btn');
+    const map = {overview:0,husun:1,principles:2,calculator:3};
+    if (btns[map[id]]) btns[map[id]].classList.add('active');
+  }
+}
+
+function switchMainTab(tab) {
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  if (tab === 'tracker') {
+    document.getElementById('navTracker').classList.add('active');
+    // Show tracker content, hide guide
+    document.getElementById('guideInApp').style.display = 'none';
+    document.getElementById('calcInApp').style.display = 'none';
+    document.getElementById('trackerContent').style.display = '';
+  } else if (tab === 'guide') {
+    document.getElementById('navGuide').classList.add('active');
+    showPage('guidePage');
+  } else if (tab === 'calc') {
+    document.getElementById('navCalc').classList.add('active');
+    showPage('guidePage');
+    showGuideSection('calculator', null);
+  }
+}
+
+// Quran surahs data (name + starting page in Medina mushaf)
+const SURAHS = [
+  {n:"الفاتحة",p:1},{n:"البقرة",p:2},{n:"آل عمران",p:50},{n:"النساء",p:77},{n:"المائدة",p:106},
+  {n:"الأنعام",p:128},{n:"الأعراف",p:151},{n:"الأنفال",p:177},{n:"التوبة",p:187},{n:"يونس",p:208},
+  {n:"هود",p:221},{n:"يوسف",p:235},{n:"الرعد",p:249},{n:"إبراهيم",p:255},{n:"الحجر",p:262},
+  {n:"النحل",p:267},{n:"الإسراء",p:282},{n:"الكهف",p:293},{n:"مريم",p:305},{n:"طه",p:312},
+  {n:"الأنبياء",p:322},{n:"الحج",p:332},{n:"المؤمنون",p:342},{n:"النور",p:350},{n:"الفرقان",p:359},
+  {n:"الشعراء",p:367},{n:"النمل",p:377},{n:"القصص",p:385},{n:"العنكبوت",p:396},{n:"الروم",p:404},
+  {n:"لقمان",p:411},{n:"السجدة",p:415},{n:"الأحزاب",p:418},{n:"سبأ",p:428},{n:"فاطر",p:434},
+  {n:"يس",p:440},{n:"الصافات",p:446},{n:"ص",p:453},{n:"الزمر",p:458},{n:"غافر",p:467},
+  {n:"فصلت",p:477},{n:"الشورى",p:483},{n:"الزخرف",p:489},{n:"الدخان",p:496},{n:"الجاثية",p:499},
+  {n:"الأحقاف",p:502},{n:"محمد",p:507},{n:"الفتح",p:511},{n:"الحجرات",p:515},{n:"ق",p:518},
+  {n:"الذاريات",p:520},{n:"الطور",p:523},{n:"النجم",p:526},{n:"القمر",p:528},{n:"الرحمن",p:531},
+  {n:"الواقعة",p:534},{n:"الحديد",p:537},{n:"المجادلة",p:542},{n:"الحشر",p:545},{n:"الممتحنة",p:549},
+  {n:"الصف",p:551},{n:"الجمعة",p:553},{n:"المنافقون",p:554},{n:"التغابن",p:556},{n:"الطلاق",p:558},
+  {n:"التحريم",p:560},{n:"الملك",p:562},{n:"القلم",p:564},{n:"الحاقة",p:566},{n:"المعارج",p:568},
+  {n:"نوح",p:570},{n:"الجن",p:572},{n:"المزمل",p:574},{n:"المدثر",p:575},{n:"القيامة",p:577},
+  {n:"الإنسان",p:578},{n:"المرسلات",p:580},{n:"النبأ",p:582},{n:"النازعات",p:583},{n:"عبس",p:585},
+  {n:"التكوير",p:586},{n:"الانفطار",p:587},{n:"المطففين",p:587},{n:"الانشقاق",p:589},{n:"البروج",p:590},
+  {n:"الطارق",p:591},{n:"الأعلى",p:591},{n:"الغاشية",p:592},{n:"الفجر",p:593},{n:"البلد",p:594},
+  {n:"الشمس",p:595},{n:"الليل",p:595},{n:"الضحى",p:596},{n:"الشرح",p:596},{n:"التين",p:597},
+  {n:"العلق",p:597},{n:"القدر",p:598},{n:"البينة",p:598},{n:"الزلزلة",p:599},{n:"العاديات",p:599},
+  {n:"القارعة",p:600},{n:"التكاثر",p:600},{n:"العصر",p:601},{n:"الهمزة",p:601},{n:"الفيل",p:601},
+  {n:"قريش",p:602},{n:"الماعون",p:602},{n:"الكوثر",p:602},{n:"الكافرون",p:603},{n:"النصر",p:603},
+  {n:"المسد",p:603},{n:"الإخلاص",p:604},{n:"الفلق",p:604},{n:"الناس",p:604}
+];
+
+function initSurahSelect() {
+  const sel = document.getElementById('calcSurah');
+  if (!sel) return;
+  SURAHS.forEach((s, i) => {
+    const opt = document.createElement('option');
+    opt.value = s.p;
+    opt.textContent = (i+1) + '. ' + s.n + ' (ص ' + s.p + ')';
+    sel.appendChild(opt);
+  });
+}
+
+function updateCalcPage() {
+  const sel = document.getElementById('calcSurah');
+  const pageInput = document.getElementById('calcPage');
+  if (sel.value) pageInput.value = sel.value;
+}
+
+function validateCalcPage() {
+  const v = parseInt(document.getElementById('calcPage').value);
+  if (v < 1) document.getElementById('calcPage').value = 1;
+  if (v > 604) document.getElementById('calcPage').value = 604;
+}
+
+function calculateReview() {
+  const lastPage = parseInt(document.getElementById('calcPage').value);
+  const daysCount = parseInt(document.getElementById('calcDays').value);
+  if (!lastPage || lastPage < 1 || lastPage > 604) {
+    showToast('أدخل رقم صفحة صحيح بين ١ و ٦٠٤');
+    return;
+  }
+  // The 20 pages are: from (lastPage-19) to lastPage
+  const startPage = Math.max(1, lastPage - 19);
+  const totalPages = lastPage - startPage + 1;
+  const pagesPerDay = totalPages / daysCount;
+  
+  const DAYS_AR = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const today = new Date().getDay();
+  
+  const container = document.getElementById('dayPlans');
+  container.innerHTML = '';
+  
+  let currentPage = startPage;
+  for (let d = 0; d < daysCount; d++) {
+    const dayPages = d === daysCount-1 ? Math.ceil(pagesPerDay) : Math.round(pagesPerDay);
+    const fromPage = Math.round(currentPage);
+    const toPage = Math.min(lastPage, Math.round(currentPage + dayPages - 1));
+    const actualPages = toPage - fromPage + 1;
+    const dayName = DAYS_AR[(today + d) % 7];
+    
+    // Find surah names for range
+    const fromSurah = getSurahAtPage(fromPage);
+    const toSurah = getSurahAtPage(toPage);
+    const rangeText = fromSurah === toSurah ? fromSurah : fromSurah + ' — ' + toSurah;
+    
+    const div = document.createElement('div');
+    div.className = 'day-plan';
+    div.innerHTML = `
+      <div class="day-circle">${d+1}</div>
+      <div class="day-plan-info">
+        <div class="dp-day">${dayName}</div>
+        <div class="dp-pages">صفحة ${fromPage} → ${toPage} (${actualPages} صفحات)</div>
+        <div class="dp-range">${rangeText}</div>
+      </div>
+    `;
+    container.appendChild(div);
+    currentPage += dayPages;
+  }
+  
+  document.getElementById('totalBadge').textContent = `إجمالي ${totalPages} صفحة · ${daysCount} أيام · معدل ${(totalPages/daysCount).toFixed(1)} صفحة/يوم`;
+  document.getElementById('calcResult').classList.add('show');
+  document.getElementById('calcResult').scrollIntoView({behavior:'smooth'});
+}
+
+function getSurahAtPage(page) {
+  let surah = SURAHS[0].n;
+  for (let i = 0; i < SURAHS.length; i++) {
+    if (SURAHS[i].p <= page) surah = SURAHS[i].n;
+    else break;
+  }
+  return surah;
+}
+
+// Init surah select on load
+setTimeout(initSurahSelect, 500);
+
+// -- AI CALCULATOR ----------------------------------------------------------
+function setExample(btn) {
+  document.getElementById('aiCalcInput').value = btn.dataset.ex;
+  document.getElementById('aiCalcInput').focus();
+}
+
+async function runAICalc() {
+  const input = document.getElementById('aiCalcInput').value.trim();
+  if (!input) { showToast('اكتب السور التي حفظتها أولاً'); return; }
+
+  const btn = document.getElementById('aiCalcBtn');
+  btn.disabled = true;
+  document.getElementById('aiCalcThinking').style.display = 'block';
+  document.getElementById('aiCalcResult').style.display = 'none';
+
+  const SYSTEM_PROMPT = `أنت مساعد ذكي متخصص في منهجية الحصون الخمسة لحفظ القرآن الكريم.
+استخدم بيانات طبعة مصحف المدينة المنورة 604 صفحة الدقيقة التالية:
+الفاتحة:1, البقرة:2, آل عمران:50, النساء:77, المائدة:106, الأنعام:128, الأعراف:151, الأنفال:177, التوبة:187, يونس:208, هود:221, يوسف:235, الرعد:249, إبراهيم:255, الحجر:262, النحل:267, الإسراء:282, الكهف:293, مريم:305, طه:312, الأنبياء:322, الحج:332, المؤمنون:342, النور:350, الفرقان:359, الشعراء:367, النمل:377, القصص:385, العنكبوت:396, الروم:404, لقمان:411, السجدة:415, الأحزاب:418, سبأ:428, فاطر:434, يس:440, الصافات:446, ص:453, الزمر:458, غافر:467, فصلت:477, الشورى:483, الزخرف:489, الدخان:496, الجاثية:499, الأحقاف:502, محمد:507, الفتح:511, الحجرات:515, ق:518, الذاريات:520, الطور:523, النجم:526, القمر:528, الرحمن:531, الواقعة:534, الحديد:537, المجادلة:542, الحشر:545, الممتحنة:549, الصف:551, الجمعة:553, المنافقون:554, التغابن:556, الطلاق:558, التحريم:560, الملك:562, القلم:564, الحاقة:566, المعارج:568, نوح:570, الجن:572, المزمل:574, المدثر:575, القيامة:577, الإنسان:578, المرسلات:580, النبأ:582, النازعات:583, عبس:585, التكوير:586, الانفطار:587, المطففين:587, الانشقاق:589, البروج:590, الطارق:591, الأعلى:591, الغاشية:592, الفجر:593, البلد:594, الشمس:595, الليل:595, الضحى:596, الشرح:596, التين:597, العلق:597, القدر:598, البينة:598, الزلزلة:599, العاديات:599, القارعة:600, التكاثر:600, العصر:601, الهمزة:601, الفيل:601, قريش:602, الماعون:602, الكوثر:602, الكافرون:603, النصر:603, المسد:603, الإخلاص:604, الفلق:604, الناس:604
+آخر سورة تبدأ في صفحة N تنتهي قبل بداية السورة التالية.
+القواعد: مراجعة القريب=آخر 20 صفحة يومياً. مراجعة البعيد=الباقي يختم كل 7 أيام. إذا المجموع اقل من او يساوي 20 فالبعيد=صفر.
+أجب فقط بـ JSON هكذا بدون أي نص آخر:
+{"total_pages":0,"near_pages":0,"far_pages":0,"near_surahs":[],"near_range":"","far_surahs":[],"far_range":"","daily_far_pages":0,"daily_far_note":"","summary":""}`;
+
+  try {
+    // Call Supabase Edge Function (proxy to avoid CORS)
+    const response = await fetch('https://nwqjhdxzwzxwdkfjvjij.supabase.co/functions/v1/ai-review-calc', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ input: input })
+    });
+
+    const result = await response.json();
+    if (!response.ok || result.error) throw new Error(result.error || 'HTTP ' + response.status);
+    renderAIResult(result);
+  } catch(e) {
+    document.getElementById('aiCalcResult').style.display = 'block';
+    document.getElementById('aiCalcContent').innerHTML = '<div class="ai-error">حدث خطأ: ' + e.message + '</div>';
+  }
+
+  btn.disabled = false;
+  document.getElementById('aiCalcThinking').style.display = 'none';
+  document.getElementById('aiCalcResult').style.display = 'block';
+  document.getElementById('aiCalcResult').scrollIntoView({ behavior: 'smooth' });
+}
+
+function renderAIResult(r) {
+  var DAYS_AR = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  var today = new Date().getDay();
+  var pagesPerDay = r.daily_far_pages || 0;
+
+  var farScheduleHTML = '';
+  if (r.far_pages > 0) {
+    farScheduleHTML = '<div class="ai-day-grid">';
+    var assigned = 0;
+    for (var i = 0; i < 7; i++) {
+      var dayPages = (i === 6) ? (r.far_pages - assigned) : Math.round(pagesPerDay);
+      dayPages = Math.max(1, dayPages);
+      if (i < 6) assigned += Math.round(pagesPerDay);
+      var dayName = DAYS_AR[(today + i) % 7];
+      farScheduleHTML += '<div class="ai-day-box"><div class="adb-name">' + dayName + '</div><div class="adb-pages">' + dayPages + '</div><div class="adb-unit">صفحة</div></div>';
+    }
+    farScheduleHTML += '</div>';
+  }
+
+  var nearTags = (r.near_surahs || []).map(function(s){ return '<span class="ai-surah-tag">' + s + '</span>'; }).join('');
+  var farTags = (r.far_surahs || []).map(function(s){ return '<span class="ai-surah-tag far">' + s + '</span>'; }).join('');
+
+  document.getElementById('aiCalcContent').innerHTML =
+    '<div style="background:linear-gradient(135deg,#1A2744,#0D47A1);border-radius:14px;padding:18px;margin-bottom:14px;color:#fff;">' +
+      '<div style="font-size:11px;color:#C8963E;font-weight:700;margin-bottom:6px;">📊 ملخص محفوظاتك</div>' +
+      '<div style="font-size:14px;font-weight:700;line-height:1.7;">' + (r.summary || '') + '</div>' +
+      '<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;">' +
+        '<div style="background:rgba(255,255,255,.1);border-radius:10px;padding:10px;"><div style="font-size:22px;font-weight:800;color:#C8963E;">' + r.total_pages + '</div><div style="font-size:10px;opacity:.8;">إجمالي الصفحات</div></div>' +
+        '<div style="background:rgba(194,24,91,.3);border-radius:10px;padding:10px;"><div style="font-size:22px;font-weight:800;color:#F48FB1;">' + r.near_pages + '</div><div style="font-size:10px;opacity:.8;">صفحات القريب</div></div>' +
+        '<div style="background:rgba(25,118,210,.3);border-radius:10px;padding:10px;"><div style="font-size:22px;font-weight:800;color:#90CAF9;">' + r.far_pages + '</div><div style="font-size:10px;opacity:.8;">صفحات البعيد</div></div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="ai-result-section" style="border-color:#F48FB1;">' +
+      '<h4 style="color:#880E4F;">🔴 مراجعة القريب — يومياً من الصدر</h4>' +
+      '<div style="background:#FFF0F6;border-radius:10px;padding:12px;margin-bottom:12px;">' +
+        '<div style="font-size:12px;color:#880E4F;font-weight:700;margin-bottom:6px;">' + (r.near_range || '') + '</div>' +
+        '<div>' + nearTags + '</div>' +
+      '</div>' +
+      '<div class="ai-stat-row"><span class="ai-stat-label">عدد الصفحات</span><span class="ai-stat-val" style="color:#880E4F;">' + r.near_pages + ' صفحة</span></div>' +
+      '<div class="ai-stat-row"><span class="ai-stat-label">التكرار</span><span class="ai-stat-val">يومياً — كل الـ ' + r.near_pages + ' صفحة دفعة واحدة</span></div>' +
+      '<div class="ai-stat-row"><span class="ai-stat-label">طريقة المراجعة</span><span class="ai-stat-val">غيباً من الصدر</span></div>' +
+    '</div>' +
+    '<div class="ai-result-section" style="border-color:#90CAF9;">' +
+      '<h4 style="color:#0D47A1;">🔵 مراجعة البعيد — أسبوعياً</h4>' +
+      (r.far_pages > 0 ?
+        '<div style="background:#E3F2FD;border-radius:10px;padding:12px;margin-bottom:12px;">' +
+          '<div style="font-size:12px;color:#0D47A1;font-weight:700;margin-bottom:6px;">' + (r.far_range || '') + '</div>' +
+          '<div>' + farTags + '</div></div>' +
+        '<div class="ai-stat-row"><span class="ai-stat-label">إجمالي الصفحات</span><span class="ai-stat-val" style="color:#0D47A1;">' + r.far_pages + ' صفحة</span></div>' +
+        '<div class="ai-stat-row"><span class="ai-stat-label">الورد اليومي المطلوب</span><span class="ai-stat-val" style="color:#0D47A1;font-size:15px;">' + (r.daily_far_note || r.daily_far_pages + ' صفحة') + '</span></div>' +
+        '<div style="margin-top:10px;font-size:11px;color:#666;margin-bottom:8px;">التوزيع اليومي:</div>' +
+        farScheduleHTML
+      :
+        '<div style="background:#E3F2FD;border-radius:10px;padding:16px;text-align:center;color:#0D47A1;">' +
+          '<div style="font-size:24px;margin-bottom:8px;">🎉</div>' +
+          '<div style="font-weight:700;">محفوظاتك 20 صفحة أو أقل</div>' +
+          '<div style="font-size:12px;opacity:.8;margin-top:4px;">مراجعة البعيد = صفر الآن</div></div>'
+      ) +
+    '</div>' +
+    '<div style="background:linear-gradient(135deg,#1B5E20,#0D47A1);border-radius:14px;padding:16px;text-align:center;color:#fff;">' +
+      '<div style="font-size:13px;font-weight:700;color:#C8963E;margin-bottom:6px;">⚡ تذكّر الديناميكية</div>' +
+      '<div style="font-size:12px;opacity:.85;line-height:1.8;">كلما حفظت صفحة جديدة تدخل للقريب وتخرج أقدم صفحة للبعيد تلقائياً</div>' +
+      '<button onclick="document.getElementById(\'aiCalcInput\').value=\'\';document.getElementById(\'aiCalcResult\').style.display=\'none\';" style="margin-top:12px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:7px 18px;color:#fff;font-family:Tajawal,sans-serif;font-size:12px;cursor:pointer;">حساب جديد ←</button>' +
+    '</div>';
+}
+
+
+// ═══════════════════════════════════════════════
+// WEEKLY REPORT
+// ═══════════════════════════════════════════════
+function openReport() {
+  const week = state.weeks[state.currentWeek];
+  if (!week) { showToast('لا توجد بيانات بعد'); return; }
+  const t = calcTotals(week);
+  const checks = [t.h1a,t.h1b,t.h1c,t.h2a,t.h2b,t.h2c,t.h3a,t.h4a,t.h5a];
+  const total = checks.reduce(function(a,b){return a+b;},0);
+  const maxTotal = 63;
+  const pct = Math.round(total/maxTotal*100);
+
+  document.getElementById('reportPct').textContent = pct + '%';
+  document.getElementById('reportPct').style.color = pct>=80?'#1B5E20':pct>=50?'#F57C00':'#C62828';
+  document.getElementById('reportWeekLabel').textContent = 'الاسبوع ' + week.num;
+
+  var compareText = '';
+  if (state.weeks.length > 1 && state.currentWeek > 0) {
+    var prev = state.weeks[state.currentWeek - 1];
+    var pt = calcTotals(prev);
+    var prevTotal = [pt.h1a,pt.h1b,pt.h1c,pt.h2a,pt.h2b,pt.h2c,pt.h3a,pt.h4a,pt.h5a].reduce(function(a,b){return a+b;},0);
+    var prevPct = Math.round(prevTotal/maxTotal*100);
+    var diff = pct - prevPct;
+    compareText = diff>0 ? 'تحسن ' + diff + '% عن الاسبوع الماضي' :
+                  diff<0 ? 'انخفض ' + Math.abs(diff) + '% عن الاسبوع الماضي' :
+                  'نفس مستوى الاسبوع الماضي';
+  }
+  document.getElementById('reportCompare').textContent = compareText;
+
+  var HUSUN = [
+    {label:'الحصن الاول - قراءة مستمرة', val:t.h1a, max:7, color:'#1B5E20', icon:'📖'},
+    {label:'الحصن الاول - استماع منهجي', val:t.h1b, max:7, color:'#1B5E20', icon:'🎧'},
+    {label:'الحصن الاول - اسبوعي', val:t.h1c, max:7, color:'#1B5E20', icon:'📅'},
+    {label:'الحصن الثاني - ليل', val:t.h2a, max:7, color:'#0D47A1', icon:'🌙'},
+    {label:'الحصن الثاني - قبل', val:t.h2b, max:7, color:'#0D47A1', icon:'🌅'},
+    {label:'الحصن الثاني - حفظ جديد', val:t.h2c, max:7, color:'#0D47A1', icon:'✨'},
+    {label:'الحصن الثالث - مراجعة القريب', val:t.h3a, max:7, color:'#E65100', icon:'🔴'},
+    {label:'الحصن الرابع - مراجعة البعيد', val:t.h4a, max:7, color:'#880E4F', icon:'🔵'},
+    {label:'الحصن الخامس - التخصصي', val:t.h5a, max:7, color:'#4A148C', icon:'🟣'},
+  ];
+  var html = '';
+  HUSUN.forEach(function(h) {
+    var p = Math.round(h.val/h.max*100);
+    var em = h.val===h.max?'✅':h.val===0?'❌':'⚠️';
+    html += '<div class="report-stat"><div class="rs-icon" style="background:'+h.color+'22;">'+h.icon+'</div>'
+      +'<div class="rs-info"><div class="rs-label">'+h.label+'</div>'
+      +'<div class="rs-val">'+h.val+'/'+h.max+' ايام '+em+'</div>'
+      +'<div class="rs-bar"><div class="rs-fill" style="width:'+p+'%;background:'+h.color+';"></div></div></div></div>';
+  });
+  document.getElementById('reportStats').innerHTML = html;
+  document.getElementById('reportModal').classList.add('open');
+}
+function closeReport() { document.getElementById('reportModal').classList.remove('open'); }
+
+// ═══════════════════════════════════════════════
+// MEMORIZATION MAP
+// ═══════════════════════════════════════════════
+var MAP_SURAHS = [
+  ['الفاتحة',1],['البقرة',2],['آل عمران',50],['النساء',77],['المائدة',106],
+  ['الانعام',128],['الاعراف',151],['الانفال',177],['التوبة',187],['يونس',208],
+  ['هود',221],['يوسف',235],['الرعد',249],['إبراهيم',255],['الحجر',262],
+  ['النحل',267],['الإسراء',282],['الكهف',293],['مريم',305],['طه',312],
+  ['الانبياء',322],['الحج',332],['المؤمنون',342],['النور',350],['الفرقان',359],
+  ['الشعراء',367],['النمل',377],['القصص',385],['العنكبوت',396],['الروم',404],
+  ['لقمان',411],['السجدة',415],['الاحزاب',418],['سبا',428],['فاطر',434],
+  ['يس',440],['الصافات',446],['ص',453],['الزمر',458],['غافر',467],
+  ['فصلت',477],['الشورى',483],['الزخرف',489],['الدخان',496],['الجاثية',499],
+  ['الاحقاف',502],['محمد',507],['الفتح',511],['الحجرات',515],['ق',518],
+  ['الذاريات',520],['الطور',523],['النجم',526],['القمر',528],['الرحمن',531],
+  ['الواقعة',534],['الحديد',537],['المجادلة',542],['الحشر',545],['الممتحنة',549],
+  ['الصف',551],['الجمعة',553],['المنافقون',554],['التغابن',556],['الطلاق',558],
+  ['التحريم',560],['الملك',562],['القلم',564],['الحاقة',566],['المعارج',568],
+  ['نوح',570],['الجن',572],['المزمل',574],['المدثر',575],['القيامة',577],
+  ['الإنسان',578],['المرسلات',580],['النبا',582],['النازعات',583],['عبس',585],
+  ['التكوير',586],['الانفطار',587],['المطففين',587],['الانشقاق',589],['البروج',590],
+  ['الطارق',591],['الاعلى',591],['الغاشية',592],['الفجر',593],['البلد',594],
+  ['الشمس',595],['الليل',595],['الضحى',596],['الشرح',596],['التين',597],
+  ['العلق',597],['القدر',598],['البينة',598],['الزلزلة',599],['العاديات',599],
+  ['القارعة',600],['التكاثر',600],['العصر',601],['الهمزة',601],['الفيل',601],
+  ['قريش',602],['الماعون',602],['الكوثر',602],['الكافرون',603],['النصر',603],
+  ['المسد',603],['الإخلاص',604],['الفلق',604],['الناس',604]
+];
+var currentMapPage = 0;
+
+function openMap() {
+  initMapSelect();
+  renderQuranGrid(currentMapPage);
+  document.getElementById('mapModal').classList.add('open');
+  loadMapDB();
+}
+function closeMap() { document.getElementById('mapModal').classList.remove('open'); }
+
+function initMapSelect() {
+  var sel = document.getElementById('mapSurahSelect');
+  if (!sel || sel.options.length > 1) return;
+  MAP_SURAHS.forEach(function(s) {
+    var o = document.createElement('option');
+    o.value = s[1]; o.textContent = s[0] + ' (ص ' + s[1] + ')';
+    sel.appendChild(o);
+  });
+}
+
+function updateMapFromSurah() {
+  var v = parseInt(document.getElementById('mapSurahSelect').value);
+  if (v) { currentMapPage = v; renderQuranGrid(v); }
+}
+
+function renderQuranGrid(lastPage) {
+  var grid = document.getElementById('quranGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  for (var p = 1; p <= 604; p++) {
+    var cell = document.createElement('div');
+    cell.className = 'page-cell';
+    if (p <= lastPage) {
+      var nearStart = Math.max(1, lastPage - 19);
+      cell.classList.add(p >= nearStart ? 'near' : 'memorized');
+    }
+    cell.title = 'صفحة ' + p;
+    grid.appendChild(cell);
+  }
+}
+
+async function loadMapDB() {
+  if (!currentUser) return;
+  var res = await sb.from('husun_memorization_map').select('*').eq('user_key', currentUser.user_key).single();
+  if (res.data && res.data.last_memorized_page) {
+    currentMapPage = res.data.last_memorized_page;
+    var sel = document.getElementById('mapSurahSelect');
+    if (sel) sel.value = currentMapPage;
+    renderQuranGrid(currentMapPage);
+  }
+}
+
+async function saveMap() {
+  if (!currentUser || !currentMapPage) return;
+  await sb.from('husun_memorization_map').upsert({
+    user_key: currentUser.user_key,
+    last_memorized_page: currentMapPage,
+    updated_at: new Date().toISOString()
+  }, { onConflict: 'user_key' });
+  showToast('تم حفظ الخريطة ✓');
+  checkAchievements();
+}
+
+// ═══════════════════════════════════════════════
+// ACHIEVEMENTS
+// ═══════════════════════════════════════════════
+var BADGES = [
+  { id:'week1', check: function() { return state.weeks.length >= 1; } },
+  { id:'month1', check: function() { return state.weeks.length >= 4; } },
+  { id:'months3', check: function() { return state.weeks.length >= 12; } },
+  { id:'khatma', check: function() { return currentMapPage >= 604; } },
+  { id:'streak7', check: function() {
+    var w = state.weeks[state.currentWeek];
+    return w && w.rows.every(function(r){return r.h1a || r.h1b;});
+  }},
+  { id:'hisn1', check: function() {
+    var w = state.weeks[state.currentWeek];
+    return w && w.rows.every(function(r){return r.h1a && r.h1b && r.h1c;});
+  }},
+];
+
+async function checkAchievements() {
+  if (!currentUser) return;
+  var names = ['اول اسبوع','شهر متواصل','3 اشهر','ختمة كاملة','7 ايام متتالية','حصن مكتمل'];
+  for (var i = 0; i < BADGES.length; i++) {
+    var el = document.getElementById('badge' + i);
+    if (!el) continue;
+    if (BADGES[i].check()) {
+      if (!el.classList.contains('earned')) {
+        el.classList.remove('locked');
+        el.classList.add('earned');
+        await sb.from('husun_achievements').upsert({
+          user_key: currentUser.user_key,
+          badge_id: BADGES[i].id,
+          badge_name: names[i],
+          badge_icon: el.textContent
+        }, { onConflict: 'user_key,badge_id' });
+        showToast('🎉 إنجاز: ' + names[i] + '!');
+      }
+    }
+  }
+}
+
+async function loadAchievements() {
+  if (!currentUser) return;
+  var res = await sb.from('husun_achievements').select('*').eq('user_key', currentUser.user_key);
+  if (!res.data) return;
+  for (var i = 0; i < BADGES.length; i++) {
+    var found = res.data.find(function(a){return a.badge_id === BADGES[i].id;});
+    var el = document.getElementById('badge' + i);
+    if (el && found) { el.classList.remove('locked'); el.classList.add('earned'); }
+  }
+}
+
+// ═══════════════════════════════════════════════
+// GROUPS
+// ═══════════════════════════════════════════════
+function openGroups() {
+  document.getElementById('groupsModal').classList.add('open');
+  loadMyGroup();
+}
+function closeGroups() { document.getElementById('groupsModal').classList.remove('open'); }
+
+function genCode() { return Math.random().toString(36).slice(2,8).toUpperCase(); }
+
+async function createGroup() {
+  var name = prompt('اسم المجموعة:');
+  if (!name) return;
+  var code = genCode();
+  await sb.from('husun_groups').insert({ code: code, name: name, teacher_key: currentUser.user_key });
+  await sb.from('husun_group_members').upsert({ group_code: code, user_key: currentUser.user_key }, { onConflict: 'group_code,user_key' });
+  showToast('تم انشاء المجموعة - الكود: ' + code);
+  loadMyGroup();
+}
+
+async function joinGroupPrompt() {
+  var code = prompt('ادخل كود المجموعة:');
+  if (!code) return;
+  var res = await sb.from('husun_groups').select('*').eq('code', code.toUpperCase()).single();
+  if (!res.data) { showToast('كود غير صحيح'); return; }
+  await sb.from('husun_group_members').upsert({ group_code: code.toUpperCase(), user_key: currentUser.user_key }, { onConflict: 'group_code,user_key' });
+  showToast('انضممت لمجموعة: ' + res.data.name);
+  loadMyGroup();
+}
+
+async function loadMyGroup() {
+  if (!currentUser) return;
+  var mem = await sb.from('husun_group_members').select('group_code').eq('user_key', currentUser.user_key);
+  if (!mem.data || mem.data.length === 0) return;
+  var code = mem.data[0].group_code;
+  var gRes = await sb.from('husun_groups').select('*').eq('code', code).single();
+  if (!gRes.data) return;
+  var group = gRes.data;
+  var membersRes = await sb.from('husun_group_members').select('user_key').eq('group_code', code);
+  var keys = (membersRes.data || []).map(function(m){return m.user_key;});
+  var usersRes = await sb.from('husun_users').select('full_name,user_key').in('user_key', keys);
+  var users = usersRes.data || [];
+
+  var html = '<div class="group-code-display"><div class="gc-code">' + group.code + '</div>'
+    + '<div class="gc-label">' + group.name + ' - شارك هذا الكود</div></div>'
+    + '<div style="font-size:12px;font-weight:700;color:#666;margin-bottom:8px;">الاعضاء (' + keys.length + '):</div>';
+  users.forEach(function(u) {
+    var init = u.full_name.split(' ').map(function(w){return w[0];}).slice(0,2).join('');
+    var isTeach = u.user_key === group.teacher_key;
+    html += '<div class="group-member"><div class="gm-avatar">' + init + '</div>'
+      + '<div class="gm-info"><div class="gm-name">' + u.full_name + (isTeach?' 👑':'') + '</div>'
+      + '<div class="gm-progress">عضو نشط</div></div></div>';
+  });
+
+  var sec = document.getElementById('myGroupSection');
+  if (sec) { sec.innerHTML = html; sec.style.display = 'block'; }
+}
+
+// Hook into login
+var _origSetup = setupAppHeader;
+setupAppHeader = function() {
+  _origSetup();
+  setTimeout(function() {
+    loadAchievements();
+    loadMapDB();
+    checkAchievements();
+  }, 800);
+};
+
+</script>
+</body>
+</html>
